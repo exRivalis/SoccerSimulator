@@ -18,7 +18,7 @@ class MyState(object):
 	def __init__(self,state,idteam,idplayer) :
 		self.state = state
 		self.key = (idteam, idplayer)
-	
+		
 	def my_position(self):
 		return self.state.player_state(self.key[0], self.key[1]).position
 	
@@ -52,11 +52,15 @@ class MyState(object):
 	#recup adv le plus proche
 	def adv_nearby(self):
 		players = self.adv_players()
+		if len(players) == 0:
+			return None
 		pp = players[0]
 		for p in players:
-			if self.my_position().distance(p.player_state(p.position) < self.my_position().distance(pp.player_state.position):
+			print self.my_position().distance(self.state.player_state(p[0], p[1]).position)
+			print self.my_position().distance(self.state.player_state(pp[0], pp[1]).position)
+			if self.my_position().distance(self.state.player_state(p[0], p[1]).position) < self.my_position().distance(self.state.player_state(pp[0], pp[1]).position):
 				pp = p
-		return pp
+		return self.state.player_state(pp[0], pp[1])
 				
 		
 ## Strategie aleatoire
@@ -73,8 +77,8 @@ class Attaquant(Strategy):
 	def compute_strategy(self, state, idteam, idplayer):
 		#on cree un objet qui sera notre joueur et sur lequel on agira
 		mstate = MyState(state,idteam,idplayer)
-		return mstate.adv_nearby()
-  		return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
+		#return mstate.adv_nearby()
+		return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
 
 
 		
@@ -83,8 +87,14 @@ class Defenseur(Strategy):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
 		mstate = MyState(state,idteam,idplayer)
-		
-  		return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
+	
+		#si defenseur plus proche de la ball que de l'adv va vers la balle et tir dedans sinon va vers l'adv
+		if mstate.my_position().distance(mstate.ball_position()) < mstate.my_position().distance(mstate.adv_nearby().position):
+			return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
+
+		#
+		return mstate.aller(mstate.adv_nearby().position - Vector2D(0,0))
+		#return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
 		
 		
 		
