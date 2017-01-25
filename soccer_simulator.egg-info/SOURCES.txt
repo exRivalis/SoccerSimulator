@@ -1,0 +1,14 @@
+soccer_simulator.egg-info/PKG-INFO
+soccer_simulator.egg-info/SOURCES.txt
+soccer_simulator.egg-info/dependency_links.txt
+soccer_simulator.egg-info/requires.txt
+soccer_simulator.egg-info/top_level.txt
+soccersimulator/__init__.py
+soccersimulator/events.py
+soccersimulator/gui.py
+soccersimulator/guiutils.py
+soccersimulator/matches.py
+soccersimulator/mdpsoccer.py
+soccersimulator/settings.py
+soccersimulator/strategies.py
+soccersimulator/utils.py
