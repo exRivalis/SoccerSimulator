@@ -19,46 +19,30 @@ class MyState(object):
 		self.state = state
 		self.key = (idteam, idplayer)
 		
-	def my_position(self):
-		return self.state.player_state(self.key[0], self.key[1]).position
-	
-	def ball_position(self) :
-		return self.state.ball.position
-		
+		self.my_position = self.state.player_state(self.key[0], self.key[1]).position
+		self.ball_position = self.state.ball.position
+		self.but_adv = Vector2D(150, 45) if self.key[0] == 1 else Vector2D(0, 45)	
+		#recup joueur 
+		self.all_players = self.state.players
+		self.co_players = [ p  for p in self.all_players if p[0] == self.key[0]]
+		self.adv_players = [p  for p in self.all_players if p[0] != self.key[0]]
 	
 	def aller(self, p) :
-		return SoccerAction(p-self.my_position(), Vector2D())
+		return SoccerAction(p-self.my_position, Vector2D())
 	
 	def shoot(self, p) :
-		return SoccerAction(Vector2D(), p-self.my_position())
-
-	def but_adv(self) :
-		if self.key[0] == 1 :
-			return Vector2D(150, 45)
-		else :
-			return Vector2D(0, 45)
-	#recup joueur 
-	def all_players(self) :
-		return self.state.players
-			
-	def co_players(self) :
-		
-		return [ p  for p in self.all_players() if p[0] == self.key[0]]
-	
-	def adv_players(self) :
-		
-		return [ p  for p in self.all_players() if p[0] != self.key[0]]
+		return SoccerAction(Vector2D(), p-self.my_position)
 		
 	#recup adv le plus proche
 	def adv_nearby(self):
-		players = self.adv_players()
+		players = self.adv_players
 		if len(players) == 0:
 			return None
 		pp = players[0]
 		for p in players:
-			print self.my_position().distance(self.state.player_state(p[0], p[1]).position)
-			print self.my_position().distance(self.state.player_state(pp[0], pp[1]).position)
-			if self.my_position().distance(self.state.player_state(p[0], p[1]).position) < self.my_position().distance(self.state.player_state(pp[0], pp[1]).position):
+			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
+			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
+			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
 				pp = p
 		return self.state.player_state(pp[0], pp[1])
 				
@@ -78,7 +62,7 @@ class Attaquant(Strategy):
 		#on cree un objet qui sera notre joueur et sur lequel on agira
 		mstate = MyState(state,idteam,idplayer)
 		#return mstate.adv_nearby()
-		return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
+		return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
 
 
 		
@@ -89,8 +73,8 @@ class Defenseur(Strategy):
 		mstate = MyState(state,idteam,idplayer)
 	
 		#si defenseur plus proche de la ball que de l'adv va vers la balle et tir dedans sinon va vers l'adv
-		if mstate.my_position().distance(mstate.ball_position()) < mstate.my_position().distance(mstate.adv_nearby().position):
-			return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
+		if mstate.my_position.distance(mstate.ball_position) < mstate.my_position.distance(mstate.adv_nearby().position):
+			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
 
 		#
 		return mstate.aller(mstate.adv_nearby().position - Vector2D(0,0))
