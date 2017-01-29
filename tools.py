@@ -26,6 +26,8 @@ class MyState(object):
 		self.all_players = self.state.players
 		self.co_players = [ p  for p in self.all_players if p[0] == self.key[0]]
 		self.adv_players = [p  for p in self.all_players if p[0] != self.key[0]]
+		#can the player shoot in the ball
+		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
 	
 	def aller(self, p) :
 		return SoccerAction(p-self.my_position, Vector2D())
@@ -79,6 +81,18 @@ class Defenseur(Strategy):
 		#
 		return mstate.aller(mstate.adv_nearby().position - Vector2D(0,0))
 		#return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
+		
+class DefenseurPlus(Strategy):
+	def __init__(self, name="defenseurPlus"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		
+		
+		
+		
+		
+		
 		
 		
 		
