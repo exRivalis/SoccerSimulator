@@ -14,7 +14,7 @@ from soccersimulator import settings
 import math
 
 #toolbox
-from tools import MyState, Attaquant, Defenseur
+from tools import MyState, Attaquant, Defenseur, AttaquantPlus
 
 v=Vector2D(2.1,-1.4)
 
@@ -44,7 +44,7 @@ joueur1 = Player("player1", Attaquant())
 joueur2 = Player("player2", Defenseur())
 
 joueur3 = Player("player3", Attaquant())
-joueur4 = Player("player4", Defenseur())
+joueur4 = Player("player4", AttaquantPlus())
 
 joueur5 = Player("player5", Attaquant())
 joueur6 = Player("player6", Attaquant())
