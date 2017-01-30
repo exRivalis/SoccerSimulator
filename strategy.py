@@ -43,9 +43,10 @@ class AttaquantPlus(Strategy):
 	#if un autre joueur proche de la balle et la balle au dela de la moitie du terrainaller de lavant
 			if  mstate.p_near_ball(p) and mstate.ball_position.distance(mstate.but_adv) < 50:
 				#print mstate.state.player_state(p[0], p[1]).name
-				return Vector2D(1,0)
+				return mstate.aller(Vector2D(1,0))
 			elif mstate.can_shoot :
 				return mstate.shoot(mstate.but_adv)
+			return mstate.aller(Vector2D(75, 45))
 			
 		#return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
 
@@ -82,7 +83,7 @@ class Defenseur(Strategy):
 		p = mstate.adv_nearby()
 		if mstate.my_position.distance(mstate.ball_position) < mstate.my_position.distance(mstate.state.player_state(p[0], p[1]).position):
 			p = mstate.coeq_nearby()
-			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.state.player_state(p[0], p[1]))
+			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.state.player_state(p[0], p[1]).position)
 
 		return mstate.aller(mstate.state.player_state(p[0], p[1]).position)
 		#return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())

@@ -42,10 +42,10 @@ act2 = SoccerAction(2*vitesse, 2*shoot)
 
 #simulation
 
-joueur1 = Player("player1", Attaquant())
+joueur1 = Player("player1", AttaquantPlus())
 joueur2 = Player("player2", Defenseur())
 
-joueur3 = Player("player3", Attaquant())
+joueur3 = Player("player3", Defenseur())
 joueur4 = Player("player4", AttaquantPlus())
 
 joueur5 = Player("player5", Attaquant())

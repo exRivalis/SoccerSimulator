@@ -33,7 +33,7 @@ class MyState(object):
 		self.near_ball = True if self.my_position.distance(self.ball_position) < 20 else False
 	
 	def aller(self, p) :
-		return SoccerAction(p-self.my_position, Vector2D())
+		return SoccerAction(p-self.my_position , Vector2D())
 	
 	def shoot(self, p) :
 		return SoccerAction(Vector2D(), p-self.my_position)
