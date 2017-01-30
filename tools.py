@@ -43,8 +43,8 @@ class MyState(object):
 	#recup adv le plus proche
 	def adv_nearby(self):
 		players = self.adv_players
-		if len(players) == 1:
-			return None
+		"""if len(players) == 1:
+			return None"""
 		pp = players[0]
 		for p in players:
 			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
@@ -56,8 +56,8 @@ class MyState(object):
 		#recup adv le plus proche
 	def coeq_nearby(self):
 		players = self.co_players
-		if len(players) == 1:
-			return None
+		"""if len(players) == 1:
+			return """
 		pp = players[0]
 		for p in players:
 			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)

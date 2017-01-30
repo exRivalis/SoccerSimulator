@@ -81,14 +81,10 @@ class Defenseur(Strategy):
 		#si defenseur plus proche de la ball que de l'adv va vers la balle et tir dedans sinon va vers l'adv
 		p = mstate.adv_nearby()
 		if mstate.my_position.distance(mstate.ball_position) < mstate.my_position.distance(mstate.state.player_state(p[0], p[1]).position):
-			#if mstate.coeq_nearby() == 0
-				#return None
-			return mstate.drible()#ma strategie tout seul
-			if True:#si la distace en
-				return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
+			p = mstate.coeq_nearby()
+			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.state.player_state(p[0], p[1]))
 
-		#
-		return mstate.aller(mstate.state.player_state(p[0], p[1]).position - Vector2D(0,0))
+		return mstate.aller(mstate.state.player_state(p[0], p[1]).position)
 		#return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
 		
 
