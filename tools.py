@@ -72,7 +72,21 @@ class MyState(object):
 				
 	def drible(self) :
 		adv = self.adv_nearby()
+		sens = 1
 		if adv[0] == 2 :
-			if self.my_position.y < self.state.player_state(adv[0], adv[1]).position.y :
-				return None
+			sens = 1
+		else:
+			sens = -1
+		
+		if self.my_position.y < self.state.player_state(adv[0], adv[1]).position.y :#passe gauche
+				if mstate.can_shoot:
+					mstate.shoot(ball_position + sens*Vector2D(5, -5))
+				else:
+					mstate.aller(ball_position)
+		else:
+				if mstate.can_shoot:
+						mstate.shoot(ball_position + sens*Vector2D(5, 5))
+				else:
+						mstate.aller(ball_position)
+					
 

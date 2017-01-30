@@ -70,7 +70,7 @@ class DefenseurPlus(Strategy):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
 		mstate = MyState(state, idteam, idplayer)
-		
+		return mstate.drible()
 		
 		
 class Defenseur(Strategy):
