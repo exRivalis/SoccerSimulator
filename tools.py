@@ -51,7 +51,7 @@ class MyState(object):
 			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
 			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
 				pp = p
-		return self.state.player_state(pp[0], pp[1])
+		return pp
 	
 		#recup adv le plus proche
 	def coeq_nearby(self):
@@ -64,7 +64,7 @@ class MyState(object):
 			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
 			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
 				pp = p
-		return self.state.player_state(pp[0], pp[1])
+		return pp
 	
 	#true if player p near ball
 	def p_near_ball(self, p):
@@ -72,7 +72,7 @@ class MyState(object):
 				
 	def drible(self) :
 		adv = self.adv_nearby()
-		if adv.id_team == 2 :
+		if adv[0] == 2 :
 			if self.my_position.y < self.state.player_state(adv[0], adv[1]).position.y :
 				return None
 
