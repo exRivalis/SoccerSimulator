@@ -46,5 +46,15 @@ class MyState(object):
 				pp = p
 		return self.state.player_state(pp[0], pp[1])
 				
-
+	def coeq_nearby(self):
+		players = self.co_players
+		if len(players) == 0:
+			return None
+		pp = players[0]
+		for p in players:
+			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
+			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
+			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
+				pp = p
+		return self.state.player_state(pp[0], pp[1])
 		
