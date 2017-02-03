@@ -41,6 +41,7 @@ class MyState(object):
 
 		
 	#recup adv le plus proche
+	#@property
 	def adv_nearby(self):
 		players = self.adv_players
 		"""if len(players) == 1:
@@ -77,16 +78,21 @@ class MyState(object):
 			sens = 1
 		else:
 			sens = -1
-		
+		#print self.state.player_state(self.key[0], self.key[1])._rd_angle(Vector2D(1, 1), 90, 1)
 		if self.my_position.y < self.state.player_state(adv[0], adv[1]).position.y :#passe gauche
-				if mstate.can_shoot:
-					mstate.shoot(ball_position + sens*Vector2D(5, -5))
+				if self.can_shoot:
+					return self.shoot(self.ball_position + sens*Vector2D(5, -5))
 				else:
-					mstate.aller(ball_position)
+					return self.aller(self.ball_position)
 		else:
-				if mstate.can_shoot:
-						mstate.shoot(ball_position + sens*Vector2D(5, 5))
+				if self.can_shoot:
+					p_pos = self.my_position
+					angle = self.state.player_state(self.key[0], self.key[1]).acceleration
+					#v_but = self.state.player_state(self.key[0], self.key[1])._rd_angle(p_pos, angle, 1)
+					#a = self.state.player_state(self.key[0], self.key[1]).acceleration
+					print angle
+					return self.shoot(self.but_adv)
 				else:
-						mstate.aller(ball_position)
+						return self.aller(self.ball_position)
 					
 

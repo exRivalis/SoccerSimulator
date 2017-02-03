@@ -24,14 +24,43 @@ class RandomStrategy(Strategy):
 
 #creation strategy
 class Attaquant(Strategy):
+	
 	def __init__(self, name="attaquant"):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
 		#on cree un objet qui sera notre joueur et sur lequel on agira
 		mstate = MyState(state,idteam,idplayer)
+		
+		#determination sens en fonction du num equipe
+		adv = mstate.adv_nearby()
+		sens = 1
+		pos = 50
+		if adv[0] == 2 :
+			sens = 1
+			pos = 100
+		else:
+			sens = -1
+			pos = 50
+		coeq = mstate.coeq_nearby()
+		
 		#return mstate.adv_nearby()
-		return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
-
+		if mstate.key[1] == 0:
+			me = mstate.my_position.distance(mstate.ball_position)
+			lautre = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.ball_position)
+			if me < lautre:
+				return mstate.aller(mstate.ball_position)	+ mstate.shoot(mstate.but_adv)
+			
+			if mstate.my_position.x*sens < pos*sens :
+				return mstate.aller(mstate.my_position + sens*Vector2D(10, 0))
+		#si adv + proche est a x > 50
+		#mstate.state.player_state(adv[0], adv[1]).position.x*sens > sens*pos
+		
+		elif mstate.my_position.distance(mstate.state.player_state(coeq[0], coeq[1]).position) > 40:
+			if mstate.can_shoot :
+				return mstate.shoot(mstate.state.player_state(mstate.key[0], 0).position)
+			return mstate.aller(mstate.ball_position)
+		else :
+			return mstate.aller(Vector2D(mstate.my_position.x, 45))
 
 class AttaquantPlus(Strategy):
 	def __init__(self, name="attaquantPlus"):
