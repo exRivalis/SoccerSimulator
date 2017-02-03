@@ -43,6 +43,11 @@ class Attaquant(Strategy):
 			pos = 50
 		coeq = mstate.coeq_nearby()
 		
+		"""une variable qui va etudier cas : 1-si l'adversaire est plus proche de la balle que nous on retourne en defense
+		sinon on a 2-notre jouer le + proche -> va a la balle et fait une action
+		l'action passe s'il est en defense et tir vers les buts sinon
+		et l'autre joueur avance vers la balle si l'autre joueur est en defense sinon va vers les buts'
+		"""
 		#return mstate.adv_nearby()
 		if mstate.key[1] == 0:
 			me = mstate.my_position.distance(mstate.ball_position)
