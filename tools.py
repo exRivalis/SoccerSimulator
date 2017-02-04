@@ -37,8 +37,12 @@ class MyState(object):
 	
 	def shoot(self, p) :
 		return SoccerAction(Vector2D(), p-self.my_position)
-	
-
+	"""
+	@property
+	def attaque_droite(self):
+		if self.state.player_state(self.coeq_nearby[0], self.coeq_nearby[1]).position.distance(self.my_position) > 20:
+			self.aller(self.ball_position) + shoot(self.state.player_state(self.coeq_nearby[0], self.coeq_nearby[1]).position) + 
+		"""
 		
 	#recup adv le plus proche
 	#@property

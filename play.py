@@ -26,7 +26,7 @@ joueur1 = Player("player1", Attaquant())
 joueur2 = Player("player2", Attaquant())
 
 joueur3 = Player("player3", Attaquant())
-joueur4 = Player("player4", AttaquantPlus())
+joueur4 = Player("player4", Attaquant())
 
 
 team1 = SoccerTeam("Eq1", [joueur1, joueur2])

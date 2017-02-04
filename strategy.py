@@ -50,22 +50,32 @@ class Attaquant(Strategy):
 		"""
 		#return mstate.adv_nearby()
 		if mstate.key[1] == 0:
-			me = mstate.my_position.distance(mstate.ball_position)
-			lautre = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.ball_position)
-			if me < lautre:
-				return mstate.aller(mstate.ball_position)	+ mstate.shoot(mstate.but_adv)
+			me_b = mstate.my_position.distance(mstate.ball_position)
+			other_b = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.ball_position)
+			
+			me_g = mstate.my_position.distance(mstate.but_adv)
+			other_g = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.but_adv)
+			if me_b < other_b:#si je suis plus proche de la balle que l'autre
+				if me_g < other_g:# si je suis plus proche des but que lui
+					return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
+				return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.state.player_state(coeq[0], coeq[1]).position)
 			
 			if mstate.my_position.x*sens < pos*sens :
-				return mstate.aller(mstate.my_position + sens*Vector2D(10, 0))
+				return mstate.aller(mstate.my_position + sens*Vector2D(10, 0)) 
 		#si adv + proche est a x > 50
 		#mstate.state.player_state(adv[0], adv[1]).position.x*sens > sens*pos
 		
-		elif mstate.my_position.distance(mstate.state.player_state(coeq[0], coeq[1]).position) > 40:
+		elif mstate.my_position.distance(mstate.state.player_state(coeq[0], coeq[1]).position) > 10:
 			if mstate.can_shoot :
 				return mstate.shoot(mstate.state.player_state(mstate.key[0], 0).position)
 			return mstate.aller(mstate.ball_position)
-		else :
-			return mstate.aller(Vector2D(mstate.my_position.x, 45))
+		"""elif mstate.my_position.distance(mstate.ball_position) > 1:
+			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)	
+		"""		
+		
+		adv_w_ball = mstate.adv_players[0] if mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position.distance(mstate.ball_position) < mstate.state.player_state(mstate.adv_players[1][0], mstate.adv_players[1][1]).position.distance(mstate.ball_position) else mstate.adv_players[1]
+			
+		return mstate.aller(mstate.state.player_state(adv_w_ball[0], adv_w_ball[1]).position)
 
 class AttaquantPlus(Strategy):
 	def __init__(self, name="attaquantPlus"):
