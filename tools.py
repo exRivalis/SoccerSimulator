@@ -22,12 +22,17 @@ class MyState(object):
 		self.my_position = self.state.player_state(self.key[0], self.key[1]).position
 		self.ball_position = self.state.ball.position
 		self.but_adv = Vector2D(150, 45) if self.key[0] == 1 else Vector2D(0, 45)	
+		self.but = Vector2D(0, 45) if self.key[0] == 1 else Vector2D(150, 45)
 		#recup joueur 
 		self.all_players = self.state.players
 		self.co_players = [p  for p in self.all_players if (p[0] == self.key[0] and p[1] != self.key[1])]
 		self.adv_players = [p  for p in self.all_players if p[0] != self.key[0]]
 		#can the player shoot in the ball
 		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
+		
+		#side of adv
+		self.adv_on_right = 1 if self.state.player_state(self.adv_players[0][0], self.adv_players[0][1]).position.y > self.my_position.x else -1
+		
 		
 		#est proche de la balle
 		self.near_ball = True if self.my_position.distance(self.ball_position) < 20 else False

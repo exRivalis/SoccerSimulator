@@ -78,12 +78,38 @@ class Attaquant(Strategy):
 		return mstate.aller(mstate.state.player_state(adv_w_ball[0], adv_w_ball[1]).position)
 
 class SoloStrat(Strategy):
-	def __init__(self, name="soloStrategy")
-		strategy.__init__(self, name)
-	def compute_strategy(self, state, idteam, idplayer)
+	def __init__(self, name="soloStrategy"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
 		mstate = MyState(state, idteam, idplayer)
 		
+		sens = 1 if idteam == 1 else -1
 		
+		me = mstate.my_position
+		adv = mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position
+		ball = mstate.ball_position
+		but_adv = mstate.but_adv
+		but = mstate.but
+		
+		if me.distance(ball) < adv.distance(ball) :#and me.distance(but_adv) > adv.distance(but_adv):
+			if mstate.adv_on_right*sens > 0 :
+				if me.distance(but_adv) < adv.distance(but_adv) :
+					return mstate.aller(ball) + mstate.shoot(but_adv*0.001)
+				return mstate.aller(ball) + mstate.shoot(but_adv)
+			return mstate.aller(ball) + mstate.shoot(but_adv*0.001)
+				
+		return mstate.aller(ball) + mstate.shoot(but_adv)
+		"""		if me.distance(but_adv) > 10 :
+					return mstate.aller(ball) + mstate.shoot(me + Vector2D(1, 1))
+				elif me.distance(but_adv) > 10 :#and me.distance(but_adv) > adv.distance(but_adv) :
+					return mstate.aller(ball) + mstate.shoot(me + sens*Vector2D(1, 1))
+				return mstate.aller(ball) + mstate.shoot(but_adv)
+			elif me.distance(but_adv) > 10 :
+					return mstate.aller(ball) + mstate.shoot(me + sens*Vector2D(1, 1))
+			return mstate.aller(ball) + mstate.shoot(but_adv)
+		else :
+			return mstate.aller(ball) + mstate.shoot(but + Vector2D(40, 0))
+		"""
 
 class AttaquantPlus(Strategy):
 	def __init__(self, name="attaquantPlus"):
