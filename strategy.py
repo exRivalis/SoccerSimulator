@@ -77,6 +77,14 @@ class Attaquant(Strategy):
 			
 		return mstate.aller(mstate.state.player_state(adv_w_ball[0], adv_w_ball[1]).position)
 
+class SoloStrat(Strategy):
+	def __init__(self, name="soloStrategy")
+		strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer)
+		mstate = MyState(state, idteam, idplayer)
+		
+		
+
 class AttaquantPlus(Strategy):
 	def __init__(self, name="attaquantPlus"):
 		Strategy.__init__(self, name)
@@ -84,7 +92,7 @@ class AttaquantPlus(Strategy):
 		mstate = MyState(state, idteam, idplayer)
 		
 		for p in mstate.co_players:
-	#if un autre joueur proche de la balle et la balle au dela de la moitie du terrainaller de lavant
+	#if un autre joueur proche de la balle et la balle au dela de la moitie du terrain aller de lavant
 			if  mstate.p_near_ball(p) and mstate.ball_position.distance(mstate.but_adv) < 50:
 				#print mstate.state.player_state(p[0], p[1]).name
 				return mstate.aller(Vector2D(1,0))
