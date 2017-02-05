@@ -50,23 +50,99 @@ class Attaquant(Strategy):
 		"""
 		#return mstate.adv_nearby()
 		if mstate.key[1] == 0:
-			me = mstate.my_position.distance(mstate.ball_position)
-			lautre = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.ball_position)
-			if me < lautre:
-				return mstate.aller(mstate.ball_position)	+ mstate.shoot(mstate.but_adv)
+			me_b = mstate.my_position.distance(mstate.ball_position)
+			other_b = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.ball_position)
+			
+			me_g = mstate.my_position.distance(mstate.but_adv)
+			other_g = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.but_adv)
+			if me_b < other_b:#si je suis plus proche de la balle que l'autre
+				if me_g < other_g:# si je suis plus proche des but que lui
+					return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
+				return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.state.player_state(coeq[0], coeq[1]).position)
 			
 			if mstate.my_position.x*sens < pos*sens :
-				return mstate.aller(mstate.my_position + sens*Vector2D(10, 0))
+				return mstate.aller(mstate.my_position + sens*Vector2D(10, 0)) 
 		#si adv + proche est a x > 50
 		#mstate.state.player_state(adv[0], adv[1]).position.x*sens > sens*pos
 		
-		elif mstate.my_position.distance(mstate.state.player_state(coeq[0], coeq[1]).position) > 40:
+		elif mstate.my_position.distance(mstate.state.player_state(coeq[0], coeq[1]).position) > 10:
 			if mstate.can_shoot :
 				return mstate.shoot(mstate.state.player_state(mstate.key[0], 0).position)
 			return mstate.aller(mstate.ball_position)
-		else :
-			return mstate.aller(Vector2D(mstate.my_position.x, 45))
+		"""elif mstate.my_position.distance(mstate.ball_position) > 1:
+			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)	
+		"""		
+		
+		adv_w_ball = mstate.adv_players[0] if mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position.distance(mstate.ball_position) < mstate.state.player_state(mstate.adv_players[1][0], mstate.adv_players[1][1]).position.distance(mstate.ball_position) else mstate.adv_players[1]
+			
+		return mstate.aller(mstate.state.player_state(adv_w_ball[0], adv_w_ball[1]).position)
 
+class SoloStrat(Strategy):
+	def __init__(self, name="soloStrategy"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		
+		sens = 1 if idteam == 1 else -1
+		
+		me = mstate.my_position
+		adv = mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position
+		ball = mstate.ball_position
+		but_adv = mstate.but_adv
+		but = mstate.but
+		
+		if me.distance(ball) < adv.distance(ball) :#and me.distance(but_adv) > adv.distance(but_adv):
+			if mstate.adv_on_right*sens > 0 :
+				if me.distance(but_adv) < adv.distance(but_adv) :
+					return mstate.aller(ball) + mstate.shoot(but_adv*0.001)
+				return mstate.aller(ball) + mstate.shoot(but_adv)
+			return mstate.aller(ball) + mstate.shoot(but_adv*0.001)
+				
+		return mstate.aller(ball) + mstate.shoot(but_adv)
+		"""		if me.distance(but_adv) > 10 :
+					return mstate.aller(ball) + mstate.shoot(me + Vector2D(1, 1))
+				elif me.distance(but_adv) > 10 :#and me.distance(but_adv) > adv.distance(but_adv) :
+					return mstate.aller(ball) + mstate.shoot(me + sens*Vector2D(1, 1))
+				return mstate.aller(ball) + mstate.shoot(but_adv)
+			elif me.distance(but_adv) > 10 :
+					return mstate.aller(ball) + mstate.shoot(me + sens*Vector2D(1, 1))
+			return mstate.aller(ball) + mstate.shoot(but_adv)
+		else :
+			return mstate.aller(ball) + mstate.shoot(but + Vector2D(40, 0))
+		"""
+class Solo(Strategy):
+	def __init__(self, name="soloStrategy"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		
+		sens = 1 if idteam == 1 else -1
+		
+		me = mstate.my_position
+		adv = mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position
+		ball = mstate.ball_position
+		but_adv = mstate.but_adv
+		but = mstate.but
+		tirer_but = mstate.aller(ball) + mstate.shoot(but_adv)
+		"""
+		va vers la balle si l'autre joueur adverse a dist = ou plus grande que moi a la balle
+		si la balle dans ma defense : sinon s'il a un x inferieur a l'adversaire il defend en restant entre le but et la balle, et si la balle est plus proche de moi je fonce et tire dans ma direction de course quand je pourrais shooter
+		...
+		...
+		"""
+		if me.distance(ball) <= adv.distance(ball) :
+			if (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75) :
+				return tirer_but
+			else :
+				return tirer_but 
+		else :
+			if (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75) : 
+				return tirer_but
+			else :	
+				return mstate.aller((but + adv * 5) / 6)
+					
+		
+		
 class AttaquantPlus(Strategy):
 	def __init__(self, name="attaquantPlus"):
 		Strategy.__init__(self, name)
@@ -74,7 +150,7 @@ class AttaquantPlus(Strategy):
 		mstate = MyState(state, idteam, idplayer)
 		
 		for p in mstate.co_players:
-	#if un autre joueur proche de la balle et la balle au dela de la moitie du terrainaller de lavant
+	#if un autre joueur proche de la balle et la balle au dela de la moitie du terrain aller de lavant
 			if  mstate.p_near_ball(p) and mstate.ball_position.distance(mstate.but_adv) < 50:
 				#print mstate.state.player_state(p[0], p[1]).name
 				return mstate.aller(Vector2D(1,0))
