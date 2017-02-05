@@ -21,7 +21,7 @@ from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloSt
 joueur1 = Player("player1", Attaquant())
 joueur2 = Player("player2", Attaquant())
 
-joueur3 = Player("player3", Solo()
+joueur3 = Player("player3", Solo())
 joueur4 = Player("player4", AttaquantPlus())
 
 team1 = SoccerTeam("Eq1", [joueur3])
