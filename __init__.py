@@ -33,7 +33,7 @@ team1 = SoccerTeam("Eq1", [joueur3])
 
 team2 = SoccerTeam("Eq2", [joueur1, joueur2])
 
-team4 = SoccerTeam("les 4 fantastiques", [joueur1, joueur2, joueur4, jouer5])
+team4 = SoccerTeam("les 4 fantastiques", [joueur1, joueur2, joueur4, joueur5])
 #gang of four
 
 def get_team(i):
