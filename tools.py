@@ -55,7 +55,7 @@ class MyState(object):
 		"""
 		
 	#recup adv le plus proche
-	#@property
+	@property
 	def adv_nearby(self):
 		players = self.adv_players
 		"""if len(players) == 1:
@@ -64,11 +64,12 @@ class MyState(object):
 		for p in players:
 			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
 			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
-			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
+			if self.my_position.distance(players[0]) < self.my_position.distance(players[1]):
 				pp = p
 		return pp
 	
 		#recup adv le plus proche
+	@property
 	def coeq_nearby(self):
 		players = self.co_players
 		"""if len(players) == 1:
@@ -77,13 +78,13 @@ class MyState(object):
 		for p in players:
 			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
 			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
-			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
+			if self.my_position.distance(p) < self.my_position.distance(pp):
 				pp = p
 		return pp
 	
 	#true if player p near ball
 	def p_near_ball(self, p):
-		return True if self.ball_position.distance(self.state.player_state(p[0], p[1]).position) < 20 else False
+		return True if self.ball_position.distance(p) < 20 else False
 				
 	def drible(self) :
 		adv = self.adv_nearby()
@@ -93,7 +94,7 @@ class MyState(object):
 		else:
 			sens = -1
 		#print self.state.player_state(self.key[0], self.key[1])._rd_angle(Vector2D(1, 1), 90, 1)
-		if self.my_position.y < self.state.player_state(adv[0], adv[1]).position.y :#passe gauche
+		if self.my_position.y < adv.y :#passe gauche
 				if self.can_shoot:
 					return self.shoot(self.ball_position + sens*Vector2D(5, -5))
 				else:
