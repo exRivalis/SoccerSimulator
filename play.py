@@ -40,8 +40,8 @@ solo2 = Player("Hmar", SoloStrat())
 team3 = SoccerTeam("Eq1", [solo1])
 team4 = SoccerTeam("Eq2", [solo2])
 
-#match = Simulation(team1,team2, 2000)
-match = Simulation(team3, team4, 2000)
+match = Simulation(team1,team2, 2000)
+#match = Simulation(team3, team4, 2000)
 #print team1.players
 
 show_simu(match)

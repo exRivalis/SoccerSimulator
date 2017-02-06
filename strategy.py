@@ -57,8 +57,8 @@ class Attaquant(Strategy):
 			other_g = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.but_adv)
 			if me_b < other_b:#si je suis plus proche de la balle que l'autre
 				if me_g < other_g:# si je suis plus proche des but que lui
-					return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
-				return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.state.player_state(coeq[0], coeq[1]).position)
+					return mstate.aller_ball + mstate.shoot(mstate.but_adv)
+				return mstate.aller_ball + mstate.shoot(mstate.state.player_state(coeq[0], coeq[1]).position)
 			
 			if mstate.my_position.x*sens < pos*sens :
 				return mstate.aller(mstate.my_position + sens*Vector2D(10, 0)) 
@@ -68,7 +68,7 @@ class Attaquant(Strategy):
 		elif mstate.my_position.distance(mstate.state.player_state(coeq[0], coeq[1]).position) > 10:
 			if mstate.can_shoot :
 				return mstate.shoot(mstate.state.player_state(mstate.key[0], 0).position)
-			return mstate.aller(mstate.ball_position)
+			return mstate.aller_ball
 		"""elif mstate.my_position.distance(mstate.ball_position) > 1:
 			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)	
 		"""		
@@ -94,11 +94,11 @@ class SoloStrat(Strategy):
 		if me.distance(ball) < adv.distance(ball) :#and me.distance(but_adv) > adv.distance(but_adv):
 			if mstate.adv_on_right*sens > 0 :
 				if me.distance(but_adv) < adv.distance(but_adv) :
-					return mstate.aller(ball) + mstate.shoot(but_adv*0.001)
-				return mstate.aller(ball) + mstate.shoot(but_adv)
-			return mstate.aller(ball) + mstate.shoot(but_adv*0.001)
+					return mstate.aller_ball + mstate.shoot(but_adv*0.001)
+				return mstate.aller_ball + mstate.shoot(but_adv)
+			return mstate.aller_ball + mstate.shoot(but_adv*0.001)
 				
-		return mstate.aller(ball) + mstate.shoot(but_adv)
+		return mstate.aller_ball + mstate.shoot(but_adv)
 		"""		if me.distance(but_adv) > 10 :
 					return mstate.aller(ball) + mstate.shoot(me + Vector2D(1, 1))
 				elif me.distance(but_adv) > 10 :#and me.distance(but_adv) > adv.distance(but_adv) :
