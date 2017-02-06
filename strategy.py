@@ -73,7 +73,7 @@ class Attaquant(Strategy):
 			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)	
 		"""		
 		
-		adv_w_ball = mstate.adv_players[0] if mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position.distance(mstate.ball_position) < mstate.state.player_state(mstate.adv_players[1][0], mstate.adv_players[1][1]).position.distance(mstate.ball_position) else mstate.adv_players[1]
+		adv_w_ball = mstate.adv_players[0] if mstate.adv_players[0].distance(mstate.ball_position) < mstate.state.adv_players[1].distance(mstate.ball_position) else mstate.adv_players[1]
 			
 		return mstate.aller(mstate.state.player_state(adv_w_ball[0], adv_w_ball[1]).position)
 
@@ -86,7 +86,7 @@ class SoloStrat(Strategy):
 		sens = 1 if idteam == 1 else -1
 		
 		me = mstate.my_position
-		adv = mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position
+		adv = mstate.adv_players[0]
 		ball = mstate.ball_position
 		but_adv = mstate.but_adv
 		but = mstate.but

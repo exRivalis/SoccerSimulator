@@ -25,13 +25,13 @@ class MyState(object):
 		self.but = Vector2D(0, 45) if self.key[0] == 1 else Vector2D(150, 45)
 		#recup joueur 
 		self.all_players = self.state.players
-		self.co_players = [p  for p in self.all_players if (p[0] == self.key[0] and p[1] != self.key[1])]
-		self.adv_players = [p  for p in self.all_players if p[0] != self.key[0]]
+		self.co_players = [self.state.player_state(p[0], p[1]).position for p in self.all_players if (p[0] == self.key[0] and p[1] != self.key[1])]
+		self.adv_players = [self.state.player_state(p[0], p[1]).position for p in self.all_players if p[0] != self.key[0]]
 		#can the player shoot in the ball
 		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
 		
 		#side of adv
-		self.adv_on_right = 1 if self.state.player_state(self.adv_players[0][0], self.adv_players[0][1]).position.y > self.my_position.x else -1
+		self.adv_on_right = 1 if self.adv_players[0].y > self.my_position.x else -1
 		
 		
 		#est proche de la balle
