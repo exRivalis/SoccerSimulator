@@ -109,7 +109,39 @@ class SoloStrat(Strategy):
 		else :
 			return mstate.aller(ball) + mstate.shoot(but + Vector2D(40, 0))
 		"""
-
+class Solo(Strategy):
+	def __init__(self, name="soloStrategy"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		
+		sens = 1 if idteam == 1 else -1
+		
+		me = mstate.my_position
+		adv = mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position
+		ball = mstate.ball_position
+		but_adv = mstate.but_adv
+		but = mstate.but
+		tirer_but = mstate.aller(ball) + mstate.shoot(but_adv)
+		"""
+		va vers la balle si l'autre joueur adverse a dist = ou plus grande que moi a la balle
+		si la balle dans ma defense : sinon s'il a un x inferieur a l'adversaire il defend en restant entre le but et la balle, et si la balle est plus proche de moi je fonce et tire dans ma direction de course quand je pourrais shooter
+		...
+		...
+		"""
+		if me.distance(ball) <= adv.distance(ball) :
+			if (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75) :
+				return tirer_but
+			else :
+				return tirer_but 
+		else :
+			if (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75) : 
+				return tirer_but
+			else :	
+				return mstate.aller((but + adv * 5) / 6)
+					
+		
+		
 class AttaquantPlus(Strategy):
 	def __init__(self, name="attaquantPlus"):
 		Strategy.__init__(self, name)

@@ -16,12 +16,12 @@ import math
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloStrat
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloStrat, Solo
 
 joueur1 = Player("player1", Attaquant())
 joueur2 = Player("player2", Attaquant())
 
-joueur3 = Player("player3", SoloStrat)
+joueur3 = Player("player3", Solo()
 joueur4 = Player("player4", AttaquantPlus())
 
 joueur5 = Player("mnms", Attaquant())
