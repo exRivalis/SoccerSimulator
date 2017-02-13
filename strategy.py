@@ -212,6 +212,7 @@ class Strat(Strategy):
 		advs = mstate.adv_players	#tous les adversaires
 		coes = mstate.co_players	#tous les coequipiers
 		
+		#return tactic.attaquer
 		#les advs sont de l'autre cote on fonce
 		fonce = 0
 		for a in advs:

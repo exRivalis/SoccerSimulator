@@ -25,8 +25,8 @@ from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, Defens
 joueur1 = Player("player1", Strat())
 joueur2 = Player("player2", Strat())
 
-joueur3 = Player("player3", Strat())
-joueur4 = Player("player4", Strat())
+joueur3 = Player("player3", Attaquant())
+joueur4 = Player("player4", AttaquantPlus())
 
 
 #team1 = SoccerTeam("Eq1", [joueur1, joueur2])
@@ -45,8 +45,8 @@ solo2 = Player("Hmar", SoloStrat())
 #print team1.players
 
 #show_simu(match)
-team1 = SoccerTeam("Eq1", [joueur1, joueur2])
-team2 = SoccerTeam("Eq2", [joueur3, joueur4])
+team1 = SoccerTeam("Strart", [joueur1, joueur2])
+team2 = SoccerTeam("base", [joueur3, joueur4])
 
 match = Simulation(team1,team2, 2000)
 show_simu(match)

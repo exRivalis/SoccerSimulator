@@ -48,66 +48,63 @@ class TTactic(object):
 		self.idteam = idteam
 		self.idplayer = idplayer
 		
-	
-	@property
-	def attaquer(self):
-		ms = MyState(self.state, self.idteam, self.idplayer)
-		#sens = 1 if idteam == 1 else -1 #si je suis a gauche 1 sinon je suis a droite -1
-		
-		advs = ms.adv_players	#tous les adversaires
-		coes = ms.co_players	#tous les coequipiers
-		
-		#je suis plus proche de la balle
-		if ms.my_position.distance(ms.ball_position) < ms.coeq_nearby.distance(ms.ball_position):
-			#je suis plus proche des but
-			if ms.coeq_nearby.distance(ms.but_adv) < (ms.my_position.distance(ms.but_adv) - 5):
-				return ms.aller_ball + ms.aller_but_adv
-			return ms.aller_ball + ms.passe(ms.coeq_nearby + ms.sens*Vector2D(5, 0)) 
-		
-		#a egale dist
-		elif ms.my_position.distance(ms.ball_position) == ms.coeq_nearby.distance(ms.ball_position):
-			#regarder le plus proche des but aussi
-			if ms.my_position.distance(ms.but_adv) < ms.coeq_nearby.distance(ms.but_adv):
-				return ms.aller_but_adv
-			"""elif ms.my_position.distance(ms.but_adv) == ms.coeq_nearby.distance(ms.but_adv):
-				if ms.key[1] == 0:#joueur1 vers les buts
-					return ms.aller_but_adv
-				return ms.aller_ball + ms.passe(ms.coeq_nearby)
-			"""	
-			return ms.aller_ball + ms.passe(ms.coeq_nearby)
-			
-		#si l'autreplus priche dela balle, aller but_adv
-		return ms.aller_but_adv
 		
 	@property
 	def goal(self):
 		ms = MyState(self.state, self.idteam, self.idplayer)
-		
+		"""
 		#si adv pres de moi
 		if ms.my_position.distance(ms.adv_nearby) < 10:
 			#aller ball + degager
-			ms.aller_ball + ms.passe(ms.but_adv)
+			ms.aller_ball + ms.shoot(ms.but_adv)
 		
 		#sinon si moi pres balle
-		if ms.near_ball:
+		if ms.near_ball and not ms.ball_in_my_side:
 			return self.attaquer
+		elif ms.near_ball and ms.ball_in_my_side:
+			return ms.aller_ball + ms.shoot(ms.but_adv)
 			
 		#adv pres mes but 
 		if ms.adv_nearby.distance(ms.but) < 20:
 			#aller pres mes buts
 			ms.aller(ms.but + ms.sens*Vector2D(-7, 0))
-		
-		#sinon 
-		return self.attaquer
-	
+		"""
+		return ms.aller_ball + ms.shoot(ms.but_adv)
+		"""
+		#sinon
+		if ms.near_ball:
+			ms.aller_ball + ms.shoot(ms.but_adv)
+			 
+		return ms.aller(ms.but + ms.sens*Vector2D(-10, 0))
+		"""
 	@property
 	def	defendre(self):
 		ms = MyState(self.state, self.idteam, self.idplayer)
 		
-		#si coeq a la balle et on loins de nos but attaquer
-		if ms.co_near_ball and ms.my_position.distance(ms.but) > 30:
+		fonce = 0;
+		for a in ms.adv_players:
+			if ms.sens == 1: #je suis a gauche
+				if a.x >= 75:
+					#fonce = 2? ils sont de lautre cote
+					fonce += 1	
+			elif a.x <= 75:
+				fonce += 1
+				
+		if fonce == 2:
+			return ms.aller_ball + ms.aller_but_adv
+		
+		elif fonce == 1:
+			if ms.my_position.distance(ms.ball_position) < (ms.coeq_nearby.distance(ms.ball_position) - 5) and ms.near_ball:
+				return ms.aller_ball + ms.aller_but_adv
+			return ms.aller_ball + ms.passe(ms.coeq_nearby)
+			
+		elif not ms.ball_in_my_side :
 			return self.attaquer
+		
+		return self.goal
+		"""	return self.attaquer
 		return self.attaquer
+		"""
 		"""
 		#je suis a cote de la balle
 		if ms.near_ball :
@@ -155,7 +152,40 @@ class TTactic(object):
 			return ms.aller_ball# + ms.passe(ms.coeq_nearby)
 		return ms.aller_ball #+ ms.passe(ms.but_adv) #ms.aller_but_adv
 	"""
-
+	@property
+	def attaquer(self):
+		ms = MyState(self.state, self.idteam, self.idplayer)
+		#sens = 1 if idteam == 1 else -1 #si je suis a gauche 1 sinon je suis a droite -1
+		
+		advs = ms.adv_players	#tous les adversaires
+		coes = ms.co_players	#tous les coequipiers
+		
+		#je suis plus proche de la balle
+		if ms.my_position.distance(ms.ball_position) < (ms.coeq_nearby.distance(ms.ball_position)):
+			#je suis plus proche des but
+			if ms.ball_in_my_side:
+				return self.defendre	
+			if (ms.coeq_nearby.distance(ms.but_adv)) < (ms.my_position.distance(ms.but_adv)):
+				return ms.aller_ball + ms.passe(ms.coeq_nearby)# + ms.sens*Vector2D(5, 0))
+			return ms.aller_ball + ms.aller_but_adv 
+		
+		#a egale dist
+		elif ms.my_position.distance(ms.ball_position) == ms.coeq_nearby.distance(ms.ball_position):
+			if ms.ball_in_my_side:
+				return self.defendre
+			#regarder le plus proche des but aussi
+			if ms.my_position.distance(ms.but_adv) < (ms.coeq_nearby.distance(ms.but_adv) - 5):
+				return ms.aller_but_adv
+			elif ms.my_position.distance(ms.but_adv) == ms.coeq_nearby.distance(ms.but_adv):
+				if ms.key[1] == 1:#joueur1 vers les buts
+					return ms.aller_ball + ms.passe(ms.coeq_nearby)#ms.aller_but_adv
+				return ms.aller_ball + ms.passe(ms.coeq_nearby)
+			
+			#ms.passe(ms.coeq_nearby + ms.sens*Vector2D(5, 0))
+			return ms.aller_ball + ms.aller_but_adv
+			
+		#si l'autreplus priche dela balle, aller but_adv
+		return ms.aller_but_adv
 #tactiques pour 4vs4
 class FTactic(MyState):
 	def __init__(self, state, idteam, idplayer):

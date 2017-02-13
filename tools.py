@@ -50,7 +50,7 @@ class MyState(object):
 		coef = 0.005	
 		v = Vector2D(0, 0) if self.ball_position.distance(self.my_position) < 6 else self.v_ball
 		#print "dist ",  self.ball_position.distance(self.my_position)
-		return SoccerAction(p-self.my_position)# + coef*p.distance(self.my_position) + v*4)
+		return SoccerAction(p-self.my_position + coef*p.distance(self.my_position) + v*4)
 		#return SoccerAction(p-self.my_position , Vector2D())
 		#if p.distance(self.my_position) < 5:
 		
@@ -87,7 +87,7 @@ class MyState(object):
 		else :
 			if self.can_shoot:
 				return self.passe((self.but_adv - self.my_position)/10)	
-			return self.shoot(self.but_adv)
+			return self.aller(self.but_adv)
 			
 	#recup adv le plus proche
 	@property
