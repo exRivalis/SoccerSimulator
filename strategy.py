@@ -10,6 +10,8 @@ from soccersimulator import Strategy
 #toutes les constantes
 from soccersimulator import settings
 
+#toutes les tactiques
+from tactic import TTactic, FTactic, STactic
 #module math
 import math
 
@@ -42,7 +44,7 @@ class Attaquant(Strategy):
 			pos = 50
 		coeq = mstate.coeq_nearby
 		
-		"""une variable qui va etudier cas : 1-si l'adversaire est plus proche de la balle que nous on retourne en defense
+		"""une variable qui va etudier cas : 1-si l'adversaire est plus proche de la balle que nous on va en defense
 		sinon on a 2-notre jouer le + proche -> va a la balle et fait une action
 		l'action passe s'il est en defense et tir vers les buts sinon
 		et l'autre joueur avance vers la balle si l'autre joueur est en defense sinon va vers les buts'
@@ -198,4 +200,67 @@ class Defenseur(Strategy):
 		#return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
 		
 
+class Strat(Strategy):
+	#strategie attaque 2v2 utilisant des tactiques en fction de la situation
+	def __init__(self, name="attack"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		tactic = TTactic(state, idteam, idplayer)
+		
+		
+		advs = mstate.adv_players	#tous les adversaires
+		coes = mstate.co_players	#tous les coequipiers
+		
+		#les advs sont de l'autre cote on fonce
+		fonce = 0
+		for a in advs:
+			if mstate.sens == 1: #je suis a gauche
+				if a.x >= 75:
+					#fonce = 2? ils sont de lautre cote
+					fonce += 1	
+			elif a.x <= 75:
+				fonce += 1
+		
+		#si les advs de lautre cote : deux attaquants
+		if fonce == 2: 
+			return tactic.attaquer
+		
+		#si 1 ou 2 advs dans mon camp
+		#balle dans mon camp?
+		if mstate.ball_in_my_side:
+			#je suis pres balle: attaquer
+			if mstate.near_ball:
+				return tactic.attaquer
+			#adv pres balle: attaquer
+			if mstate.co_near_ball:
+				return tactic.attaquer
+			#tous deux loins: defendre
+			return tactic.defendre
+		#si la balle dans lautre camp j'attaque
+		return tactic.attaquer
+		
+			
+		"""
+		#1 attaquant & 1 defenseur
+		elif fonce == 1 and mstate.ball_in_my_side: 
+			if mstate.co_near_ball : #si coeq near ball, attaquer
+				#if mstate.key[1] == 0:#si joueur 1 je defend, sinon j'attaque
+				
+					#return tactic.defendre
+				return tactic.attaquer
+			else :
+				if mstate.near_ball:
+					return tactic.attaquer
+				#si les deux pas a cote balle, le plus proche attaque et l'autre defense
+				if mstate.my_position.distance(mstate.ball_position) < mstate.coeq_nearby.distance(mstate.ball_position):
+					return tactic.attaquer
+				return tactic.defendre
+		#les deux advs de notre cote, deux defenseurs
+		else :
+			if mstate.ball_in_my_side :
+				return tactic.defendre
+			return tactic.attaquer
+		"""
+		
 		
