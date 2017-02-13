@@ -199,7 +199,14 @@ class Defenseur(Strategy):
 		return mstate.aller(mstate.state.player_state(p[0], p[1]).position)
 		#return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
 		
-
+class Tireur(Object):
+	def __init__(self, name, k):
+		self.k = k
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		
+		return mstate.tirer(mstate.but_adv, self.k)
 class Strat(Strategy):
 	#strategie attaque 2v2 utilisant des tactiques en fction de la situation
 	def __init__(self, name="attack"):

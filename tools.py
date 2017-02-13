@@ -59,6 +59,10 @@ class MyState(object):
 		if p.distance(self.my_position) < 10:
 			return SoccerAction(Vector2D(), p-self.my_position)
 		return SoccerAction(Vector2D(), (p-self.my_position)/20)
+	
+	#pour determiner le facteur k
+	def tirer(self, p, k):
+		return SoccerAction(Vector2D(), k*(p - self.my_position))
 		
 	#passer la balle a un coeq
 	def passe(self, p) :
