@@ -31,7 +31,6 @@ class MyState(object):
 		#can the player shoot in the ball
 		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
 		
-<<<<<<< HEAD
 		#sens de la marche
 		self.sens = 1 if idteam == 1 else -1
 		#side of adv
@@ -55,14 +54,6 @@ class MyState(object):
 	def dist_ball(self):
 		return self.my_position.distance(self.ball_position)
 	
-=======
-		#side of adv
-		self.adv_on_right = 1 if self.state.player_state(self.adv_players[0][0], self.adv_players[0][1]).position.y > self.my_position.x else -1
-		
-		
-		#est proche de la balle
-		self.near_ball = True if self.my_position.distance(self.ball_position) < 20 else False
->>>>>>> 59b6a135c704a4ee33bc6701ca13491271e18c7b
 	
 	def aller(self, p) :
 		"""coefficient pour ralentir pres de la balle"""
@@ -75,7 +66,6 @@ class MyState(object):
 		
 	
 	def shoot(self, p) :
-<<<<<<< HEAD
 		if p.distance(self.my_position) < 10:
 			return SoccerAction(Vector2D(), p-self.my_position)
 		return SoccerAction(Vector2D(), (p-self.my_position)/20)
@@ -83,15 +73,6 @@ class MyState(object):
 	#pour determiner le facteur k
 	def tirer(self, p, k):
 		return SoccerAction(Vector2D(), k*(p - self.my_position))
-=======
-		return SoccerAction(Vector2D(), p-self.my_position)
-	"""
-	@property
-	def attaque_droite(self):
-		if self.state.player_state(self.coeq_nearby[0], self.coeq_nearby[1]).position.distance(self.my_position) > 20:
-			self.aller(self.ball_position) + shoot(self.state.player_state(self.coeq_nearby[0], self.coeq_nearby[1]).position) + 
-		"""
->>>>>>> 59b6a135c704a4ee33bc6701ca13491271e18c7b
 		
 	#passer la balle a un coeq
 	def passe(self, p) :
