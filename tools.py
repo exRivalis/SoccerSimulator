@@ -45,12 +45,22 @@ class MyState(object):
 	def v_ball(self):
 		return self.state.ball.vitesse
 	
+	#vect vitesse coeq
+	@property
+	def v_coeq(self):
+		return self.state.player_state(self.key[0], (self.key[1] + 1)%2).vitesse
+	#return ma distance de la balle
+	@property
+	def dist_ball(self):
+		return self.my_position.distance(self.ball_position)
+	
+	
 	def aller(self, p) :
 		"""coefficient pour ralentir pres de la balle"""
 		coef = 0.005	
 		v = Vector2D(0, 0) if self.ball_position.distance(self.my_position) < 6 else self.v_ball
 		#print "dist ",  self.ball_position.distance(self.my_position)
-		return SoccerAction(p-self.my_position + coef*p.distance(self.my_position) + v*4)
+		return SoccerAction(p-self.my_position)# + coef*p.distance(self.my_position) + v*4)
 		#return SoccerAction(p-self.my_position , Vector2D())
 		#if p.distance(self.my_position) < 5:
 		
@@ -66,7 +76,23 @@ class MyState(object):
 		
 	#passer la balle a un coeq
 	def passe(self, p) :
-		return SoccerAction(Vector2D(), (p - self.my_position)/2)
+		if p.distance(self.but_adv) < 50:#si je suis proche des buts faire des passe douces
+			if p.distance(self.but_adv) > 20:
+				if self.my_position.y < 55 and self.my_position.y > 35 and p.distance(self.but_adv) < 1:# si je vide but_adv
+					return SoccerAction(Vector2D(), (self.sens*Vector2D(10, 0)))# si je suis face au but je tir fort
+			
+				if self.my_position.distance(p) < 30: #mon coeq est proche
+					return SoccerAction(Vector2D(), (p - self.my_position + Vector2D(self.sens*7, 0))/7)#sinon doucement
+				
+			return SoccerAction(Vector2D(), (p - self.my_position))
+		# math.fabs
+		#dx = (self.my_position.x - p.x)
+		#dy = (self.my_position.y - p.y)
+			return SoccerAction(Vector2D(), (p - self.my_position))
+		if self.my_position.distance(p) < 30:
+				return SoccerAction(Vector2D(), (p - self.my_position)/15)#sinon doucement
+		return SoccerAction(Vector2D(), (p - self.my_position))
+	
 	@property
 	def aller_ball(self) :
 		#print self.state.ball.vitesse
@@ -84,10 +110,10 @@ class MyState(object):
 	#aller but adv et marquer quand possible
 	@property
 	def aller_but_adv(self):
-		if self.my_position.distance(self.but_adv) < 10:
+		if self.my_position.distance(self.but_adv) < 20:
 			if self.can_shoot:
 				return self.shoot(self.but_adv)
-			return self.aller(self.but_adv - self.sens*Vector2D(8, ))
+			return self.aller(self.but_adv )#- self.sens*Vector2D(8, ))
 		else :
 			if self.can_shoot:
 				return self.passe((self.but_adv - self.my_position)/10)	
@@ -133,6 +159,11 @@ class MyState(object):
 				return True
 		return False
 		
+	
+	@property
+	def me_near_ball(self):
+		return True if self.my_position.distance(self.ball_position) < 4 else False
+	
 	#je suis a cote de mon coeq
 	@property
 	def me_near_co(self):
