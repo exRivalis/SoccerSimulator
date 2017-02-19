@@ -59,10 +59,11 @@ class MyState(object):
 		"""coefficient pour ralentir pres de la balle"""
 		coef = 0.005	
 		v = Vector2D(0, 0) if self.ball_position.distance(self.my_position) < 6 else self.v_ball
-		#print "dist ",  self.ball_position.distance(self.my_position)
+		#si je suis proche de la balle ralentir
+		if self.dist_ball < 5 :
+			return SoccerAction((p-self.my_position)/10)
 		return SoccerAction(p-self.my_position)# + coef*p.distance(self.my_position) + v*4)
-		#return SoccerAction(p-self.my_position , Vector2D())
-		#if p.distance(self.my_position) < 5:
+
 		
 	
 	def shoot(self, p) :
@@ -82,7 +83,7 @@ class MyState(object):
 					return SoccerAction(Vector2D(), (self.sens*Vector2D(10, 0)))# si je suis face au but je tir fort
 			
 				if self.my_position.distance(p) < 30: #mon coeq est proche
-					return SoccerAction(Vector2D(), (p - self.my_position + Vector2D(self.sens*7, 0))/7)#sinon doucement
+					return SoccerAction(Vector2D(), (p - self.my_position + Vector2D(self.sens*7, 0))/10)#sinon doucement
 				
 			return SoccerAction(Vector2D(), (p - self.my_position))
 		# math.fabs

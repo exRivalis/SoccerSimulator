@@ -16,21 +16,21 @@ import math
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloStrat, Solo
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloStrat, Solo, SoloTac, Strat
 
-joueur1 = Player("player1", Attaquant())
-joueur2 = Player("player2", Attaquant())
+joueur1 = Player("One", Strat())
+joueur2 = Player("Two", Strat())
 
-joueur3 = Player("player3", Solo()
-joueur4 = Player("player4", AttaquantPlus())
+solo1 = Player("Three", SoloTac()
+solo2 = Player("player4", AttaquantPlus())
 
 joueur5 = Player("mnms", Attaquant())
 
-team1 = SoccerTeam("Eq1", [joueur3])
+team1 = SoccerTeam("DTeam", [solo1])
 
 
 
-team2 = SoccerTeam("Eq2", [joueur1, joueur2])
+team2 = SoccerTeam("None", [joueur1, joueur2])
 
 team4 = SoccerTeam("les 4 fantastiques", [joueur1, joueur2, joueur4, jouer5])
 #gang of four
