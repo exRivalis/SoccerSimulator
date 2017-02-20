@@ -28,7 +28,7 @@ class Observer(object):
 		self.simu.state.ball.position = Vector2D(120, 45) #placement du joueur au debut
 		
 	
-		#self.simu.
+		print self.simu.team1.strategies[0].compute_strategy(self.simu.state, 1, 0) 
 		#self.simu.shoot = Vector2D(10, 0)
 		self.last = self.simu.step
 	
