@@ -234,4 +234,33 @@ class SoloTac(Strategy):
 		
 		
 		return tactic.attaquer
+
+class StratRien(Strategy):
+	#strategie attaque 2v2 utilisant des tactiques en fction de la situation
+	def __init__(self, name="attack"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		tactic = STactic(state, idteam, idplayer)
+		
+		
+		return SoccerAction(Vector2D(), Vector2D())
+		
+class Shooter(Strategy):
+	def __init__(self, name="shooter"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam,idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		
+		def shoot(self, k):
+			return SoccerAction(Vector2D(), k*(mstate.but_adv - mstate.my_position))
+		
+		"""class Shooter(Strategy):
+	def __init__(self, name="shooter"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam,idplayer):
+		mstate = MyState(state, idteam, idplayer, k)
+		return SoccerAction(Vector2D(), k*(mstate.but_adv - mstate.my_position))
+		"""
+		
 		

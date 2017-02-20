@@ -10,23 +10,25 @@ from soccersimulator import Strategy
 #toutes les constantes
 from soccersimulator import settings
 
+#importer Observer pour les tests
+from Observer import Observer
 #module math
 import math
 
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Strat,SoloTac
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Strat,SoloTac, StratRien, Shooter
 
 #from tactic import *
 
 #simulation
 
-joueur1 = Player("player1", Strat())
-joueur2 = Player("player2", Strat())
+joueur1 = Player("player1", Shooter())
+joueur2 = Player("player2", StratRien())
 
-joueur3 = Player("player3", Strat())
-joueur4 = Player("player4", Strat())
+joueur3 = Player("player3", StratRien())
+joueur4 = Player("player4", StratRien())
 
 
 #team1 = SoccerTeam("Eq1", [joueur1, joueur2])
@@ -50,5 +52,5 @@ TTeam2 = SoccerTeam("base", [joueur3, joueur4])
 
 #match = Simulation(STeam1, STeam2, 2000) #solo match
 match = Simulation(TTeam1, TTeam2, 2000) #Two match
-
+Observer(match)
 show_simu(match)

@@ -62,6 +62,7 @@ class MyState(object):
 		#si je suis proche de la balle ralentir
 		if self.dist_ball < 10 and self.sens*self.v_ball.x > 0:
 			return SoccerAction((p-self.my_position)/10)
+		#print SoccerAction(p-self.my_position).set_name("aller")
 		return SoccerAction(p-self.my_position)# + coef*p.distance(self.my_position) + v*4)
 
 		
@@ -89,7 +90,7 @@ class MyState(object):
 		# math.fabs
 		#dx = (self.my_position.x - p.x)
 		#dy = (self.my_position.y - p.y)
-			return SoccerAction(Vector2D(), (p - self.my_position))
+	
 		if self.my_position.distance(p) < 30:
 				return SoccerAction(Vector2D(), (p - self.my_position))# doucement
 		return SoccerAction(Vector2D(), (p - self.my_position)/10)
@@ -97,7 +98,8 @@ class MyState(object):
 	@property
 	def aller_ball(self) :
 		#print self.state.ball.vitesse
-		return self.aller(self.ball_position)
+		if self.my_position.distance(self.ball_position) > 5:
+			return self.aller(self.ball_position)
 	
 	#la balle dans mon camp?
 	@property
