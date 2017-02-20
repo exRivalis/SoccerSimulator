@@ -209,30 +209,33 @@ class Gardien(Strategy):
 	
 	
 		sens = 1 if idteam == 1 else -1
-		pos_base = Vector2D(10, 45) if idteam == 1 else Vector2D(140, 45)	
+		
 		me = mstate.my_position
 		adv = mstate.state.player_state(mstate.adv_nearby()[0], mstate.adv_nearby()[1]).position
 		#(mstate.adv_nearby())
 		ball = mstate.ball_position
 		but_adv = mstate.but_adv
 		but = mstate.but
+		y_move = ((ball.y-45) * 15)/abs(ball.x - but.x)
+		pos_init = Vector2D(10, 45) if idteam == 1 else Vector2D(140, 45)
+		pos_base = pos_init + Vector2D(0, y_move) 
 		cote_attaque = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
 		cote_defense = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
 		adv_dist = me.distance(adv)
 		si_sort = True if (me.distance(ball) < adv.distance(ball)) else False
 		degager = mstate.shoot(but_adv)
-		co = mstate.coeq_libre
-		print(co[0])
-		co_x = co[0]
-		co_y = co[1]
-		pos_coeq_libre = mstate.state.player_state(co_x, co_y).position
+		co = mstate.coeq_libre if mstate.coeq_libre !=None else mstate.co_players[0] #normalement dans le else je met le plus proche
 		
-	
+		co_idt = co[0]
+		co_idp = co[1]
+		pos_coeq_libre = mstate.state.player_state(co_idt, co_idp).position
+		
+		
 		passer = mstate.shoot(pos_coeq_libre)
 	
 		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != None else degager
 		if (si_sort == True) :
-			return mstate.aller(ball) + joue
+			return mstate.aller_ball + joue
 		else :
 			return mstate.aller(pos_base)
 # implementer quand le gardien sort, et son emplacement quand la balle est en defense et pour les defenseur et attaquants retour passe derriere au plus proche libre 

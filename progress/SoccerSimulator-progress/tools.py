@@ -39,12 +39,12 @@ class MyState(object):
 		self.near_ball = True if self.my_position.distance(self.ball_position) < 20 else False
 		
 		#liste des coeq proche
-		self.coeq_proche = [p for p in self.co_players if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < 55]
+		self.coeq_proche = [p for p in self.co_players if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < 75]
 		
 	@property
 	def coeq_libre(self) :
 		if len(self.coeq_proche) == 0 :
-			return self.but_adv
+			return None
 		elif len(self.coeq_proche) == 1 :
 			return self.coeq_proche[0]
 		else :
@@ -56,6 +56,11 @@ class MyState(object):
 					x = d
 					pp = p
 			return pp
+	@property
+	def aller_ball(self) :
+		if self.my_position.distance(self.ball_position) > 5:
+			return SoccerAction((self.ball_position-self.my_position) + 7*self.state.ball.vitesse  , Vector2D())
+		return SoccerAction((self.ball_position - self.my_position)/50)
 	
 	def aller(self, p) :
 		return SoccerAction(p-self.my_position , Vector2D())
