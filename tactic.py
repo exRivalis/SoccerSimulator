@@ -147,7 +147,7 @@ class TTactic(object):
 		if me.distance(but_adv) < coeq.distance(but_adv):#je suis plus proche des buts adv que mon coeq
 			if ms.dist_ball < coeq.distance(ball): #je suis plus proche de la balle aussi 
 				return ms.aller(ball) + ms.passe(but_adv)
-			return ms.aller_but_adv				#je fonce
+			return ms.aller(but_adv - sens*Vector2D(7, 0))			#je fonce
 		return ms.aller(ball) + ms.passe(coeq) 	#je fonce sur la balle et je fais la passe
 			
 #tactiques pour 4vs4
