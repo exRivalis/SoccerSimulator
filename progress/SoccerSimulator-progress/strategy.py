@@ -69,21 +69,21 @@ class Attaquant(Strategy):
 			if mstate.can_shoot :
 				return mstate.shoot(mstate.state.player_state(mstate.key[0], 0).position)
 			return mstate.aller(mstate.ball_position)
-		"""elif mstate.my_position.distance(mstate.ball_position) > 1:
+		elif mstate.my_position.distance(mstate.ball_position) > 1:
 			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)	
-		"""		
+				
 		
 		adv_w_ball = mstate.adv_players[0] if mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position.distance(mstate.ball_position) < mstate.state.player_state(mstate.adv_players[1][0], mstate.adv_players[1][1]).position.distance(mstate.ball_position) else mstate.adv_players[1]
 			
-		return mstate.aller(mstate.state.player_state(adv_w_ball[0], adv_w_ball[1]).position)
+		return mstate.aller(mstate.state.player_state(adv_w_ball[0], adv_w_ball[1]).position)	
 
 class SoloStrat(Strategy):
 	def __init__(self, name="soloStrategy"):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
 		mstate = MyState(state, idteam, idplayer)
-		
-		sens = 1 if idteam == 1 else -1
+		return mstate.aller(mstate.but_adv) + mstate.shoot(mstate.but_adv)
+		"""sens = 1 if idteam == 1 else -1
 		
 		me = mstate.my_position
 		adv = mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position
@@ -98,7 +98,7 @@ class SoloStrat(Strategy):
 				return mstate.aller(ball) + mstate.shoot(but_adv)
 			return mstate.aller(ball) + mstate.shoot(but_adv*0.001)
 				
-		return mstate.aller(ball) + mstate.shoot(but_adv)
+		return mstate.aller(ball) + mstate.shoot(but_adv)"""
 		"""		if me.distance(but_adv) > 10 :
 					return mstate.aller(ball) + mstate.shoot(me + Vector2D(1, 1))
 				elif me.distance(but_adv) > 10 :#and me.distance(but_adv) > adv.distance(but_adv) :
@@ -115,7 +115,7 @@ class Solo(Strategy):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
 		mstate = MyState(state, idteam, idplayer)
-		
+		return 
 		sens = 1 if idteam == 1 else -1
 		
 		me = mstate.my_position
@@ -123,7 +123,10 @@ class Solo(Strategy):
 		ball = mstate.ball_position
 		but_adv = mstate.but_adv
 		but = mstate.but
-		tirer_but = mstate.aller(ball) + mstate.shoot(but_adv)
+		cote_attaque = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		cote_defense = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		tirer_but =  mstate.shoot(but_adv)
+
 		"""
 		va vers la balle si l'autre joueur adverse a dist = ou plus grande que moi a la balle
 		si la balle dans ma defense : sinon s'il a un x inferieur a l'adversaire il defend en restant entre le but et la balle, et si la balle est plus proche de moi je fonce et tire dans ma direction de course quand je pourrais shooter
@@ -131,12 +134,12 @@ class Solo(Strategy):
 		...
 		"""
 		if me.distance(ball) <= adv.distance(ball) :
-			if (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75) :
+			if cote_attaque :
 				return tirer_but
 			else :
 				return tirer_but 
 		else :
-			if (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75) : 
+			if cote_defense : 
 				return tirer_but
 			else :	
 				return mstate.aller((but + adv * 5) / 6)
@@ -198,5 +201,44 @@ class Defenseur(Strategy):
 		return mstate.aller(mstate.state.player_state(p[0], p[1]).position)
 		#return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
 		
-
+class Gardien(Strategy):
+	def __init__(self, name = "gardien"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+	
+	
+		sens = 1 if idteam == 1 else -1
+		pos_base = Vector2D(10, 45) if idteam == 1 else Vector2D(140, 45)	
+		me = mstate.my_position
+		adv = mstate.state.player_state(mstate.adv_nearby()[0], mstate.adv_nearby()[1]).position
+		#(mstate.adv_nearby())
+		ball = mstate.ball_position
+		but_adv = mstate.but_adv
+		but = mstate.but
+		cote_attaque = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		cote_defense = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		adv_dist = me.distance(adv)
+		si_sort = True if (me.distance(ball) < adv.distance(ball)) else False
+		degager = mstate.shoot(but_adv)
+		co = mstate.coeq_libre
+		print(co[0])
+		co_x = co[0]
+		co_y = co[1]
+		pos_coeq_libre = mstate.state.player_state(co_x, co_y).position
 		
+	
+		passer = mstate.shoot(pos_coeq_libre)
+	
+		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != None else degager
+		if (si_sort == True) :
+			return mstate.aller(ball) + joue
+		else :
+			return mstate.aller(pos_base)
+# implementer quand le gardien sort, et son emplacement quand la balle est en defense et pour les defenseur et attaquants retour passe derriere au plus proche libre 
+
+
+
+
+
+

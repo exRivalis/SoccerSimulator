@@ -27,21 +27,46 @@ class MyState(object):
 		self.all_players = self.state.players
 		self.co_players = [p  for p in self.all_players if (p[0] == self.key[0] and p[1] != self.key[1])]
 		self.adv_players = [p  for p in self.all_players if p[0] != self.key[0]]
+		
 		#can the player shoot in the ball
 		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
 		
 		#side of adv
-		self.adv_on_right = 1 if self.state.player_state(self.adv_players[0][0], self.adv_players[0][1]).position.y > self.my_position.x else -1
+		self.adv_on_right = 1 if self.state.player_state(self.adv_players[0][0], self.adv_players[0][1]).position.y > self.my_position.y else -1
 		
 		
 		#est proche de la balle
 		self.near_ball = True if self.my_position.distance(self.ball_position) < 20 else False
+		
+		#liste des coeq proche
+		self.coeq_proche = [p for p in self.co_players if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < 55]
+		
+	@property
+	def coeq_libre(self) :
+		if len(self.coeq_proche) == 0 :
+			return self.but_adv
+		elif len(self.coeq_proche) == 1 :
+			return self.coeq_proche[0]
+		else :
+			x = mstate.player_state(p[0], p[1]).position.distance(mstate.player_state(p[0], p[1]).adv_nearby())
+			pp = coeq_proche[0]
+			for p in coeq_proche[1:] :
+				d = mstate.player_state(p[0], p[1]).position.distance(mstate.player_state(p[0], p[1]).adv_nearby())
+				if x < d :
+					x = d
+					pp = p
+			return pp
 	
 	def aller(self, p) :
 		return SoccerAction(p-self.my_position , Vector2D())
 	
 	def shoot(self, p) :
-		return SoccerAction(Vector2D(), p-self.my_position)
+		if self.can_shoot :
+			return SoccerAction(Vector2D(), p-self.my_position)  
+		else :
+			return self.aller(self.ball_position)
+	
+			
 	"""
 	@property
 	def attaque_droite(self):
@@ -62,6 +87,19 @@ class MyState(object):
 			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
 				pp = p
 		return pp
+	
+	def pos_j(self, p):
+		return self.state.player_state(p[0], p[1]).position
+		
+	
+	
+	
+	def adv_nearbyj(self, idteam, idplayer) :
+		if self.idteam == idteam :
+			return adv_nearby()
+		else :
+			return coeq_nearby()
+		
 	
 		#recup adv le plus proche
 	def coeq_nearby(self):
@@ -104,4 +142,20 @@ class MyState(object):
 				else:
 						return self.aller(self.ball_position)
 					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
