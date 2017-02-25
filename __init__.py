@@ -21,14 +21,12 @@ from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloSt
 joueur1 = Player("One", Strat())
 joueur2 = Player("Two", Strat())
 
-solo1 = Player("Three", SoloTac()
+solo1 = Player("Three", SoloTac())
 solo2 = Player("player4", AttaquantPlus())
 
 joueur5 = Player("mnms", Attaquant())
 
 team1 = SoccerTeam("DTeam", [solo1])
-
-
 
 team2 = SoccerTeam("None", [joueur1, joueur2])
 
