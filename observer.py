@@ -28,7 +28,7 @@ class Observer(object):
 		self.simu.state.ball.position = Vector2D(120, 45) #placement du joueur au debut
 		
 	
-		print self.simu.team1.strategies[0].compute_strategy(self.simu.state, 1, 0) 
+		#print self.simu.team1.strategies[0].compute_strategy(self.simu.state, 1, 0) 
 		#self.simu.shoot = Vector2D(10, 0)
 		self.last = self.simu.step
 	
@@ -39,7 +39,7 @@ class Observer(object):
 		if state.goal > 0: self.cpt += 1
 		self.cpt_tot += 1
 		self.res = self.cpt*1./self.cpt_tot
-		if self.cpt_tot > 20:
+		if self.cpt_tot > 50:
 			print self.res
 			self.simu.end_match()
 			
