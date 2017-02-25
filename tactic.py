@@ -41,8 +41,8 @@ class STactic(MyState):
 		
 		if ms.dist_ball < 2:
 			return ms.passe(but_adv - me)
-		return ms.aller(ball + 3*sens*v_ball)
-		
+		#return ms.aller(ball + 3*sens*v_ball)
+			return ms.aller_ball
 		
 	
 	@property

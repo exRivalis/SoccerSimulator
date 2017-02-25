@@ -21,10 +21,12 @@ from tools import MyState
 #for k in range(0, 50):# k allant de 0 a 50 par pas de 1
 #	for i in range(0, 1000): #pour 1000 tirs
 		#								(idteam, idplayer) : player, ball = Ball(pos, vit)
+"""
 posB = Vector2D(20, 30)
 posP = Vector2D(18, 28)
 vB	= Vector2D(0, 0)
-state = SoccerState(states = {(1, 0) : PlayerState(posP, Vector2D(0, 0))}, ball = Ball(posB, vB))
+state = SoccerState(states = {(1, 0) : PlayerState(posP, Vector2D(0, 0)), (2, 0) : PlayerState(posP, Vector2D(0, 0))}, ball = Ball(posB, vB))
+"""
 
 p1 = Player("Houta", Solo())
 p2 = Player("Hmar", Solo())
@@ -32,7 +34,8 @@ p2 = Player("Hmar", Solo())
 team1 = SoccerTeam("equipe1", [p1])
 team2 = SoccerTeam("equipe2", [p2])
 
-match = Simulation(team1, team2, init_state = state, max_step=20)
+match = Simulation(team1, team2, 2000)
+
 show_simu(match)
 		
 		 
