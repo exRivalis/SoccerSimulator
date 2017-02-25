@@ -11,7 +11,7 @@ from soccersimulator import Strategy
 from soccersimulator import settings
 
 #importer Observer pour les tests
-from Observer import Observer
+from observer import Observer
 #module math
 import math
 
