@@ -57,7 +57,7 @@ class Attaquant(Strategy):
 			other_g = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.but_adv)
 			if me_b < other_b:#si je suis plus proche de la balle que l'autre
 				if me_g < other_g:# si je suis plus proche des but que lui
-					return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)
+					return mstate.shoot(mstate.but_adv)
 				return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.state.player_state(coeq[0], coeq[1]).position)
 			
 			if mstate.my_position.x*sens < pos*sens :
@@ -70,7 +70,7 @@ class Attaquant(Strategy):
 				return mstate.shoot(mstate.state.player_state(mstate.key[0], 0).position)
 			return mstate.aller(mstate.ball_position)
 		elif mstate.my_position.distance(mstate.ball_position) > 1:
-			return mstate.aller(mstate.ball_position) + mstate.shoot(mstate.but_adv)	
+			return mstate.shoot(mstate.but_adv)	
 				
 		
 		adv_w_ball = mstate.adv_players[0] if mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position.distance(mstate.ball_position) < mstate.state.player_state(mstate.adv_players[1][0], mstate.adv_players[1][1]).position.distance(mstate.ball_position) else mstate.adv_players[1]
@@ -222,20 +222,29 @@ class Gardien(Strategy):
 		cote_attaque = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
 		cote_defense = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
 		adv_dist = me.distance(adv)
-		si_sort = True if (me.distance(ball) < adv.distance(ball)) else False
+		si_sort = True if (me.distance(ball) < adv.distance(ball) and ball.distance(but)<75) else False
+		si_avance = True if (me.distance(ball) < 2 * adv.distance(ball) and ball.distance(but)<35) else False
 		degager = mstate.shoot(but_adv)
-		co = mstate.coeq_libre if mstate.coeq_libre !=None else mstate.co_players[0] #normalement dans le else je met le plus proche
+		#l'adversaire plus proches aux buts que le gardien
+		adv_but = [p for p in mstate.adv_players if (mstate.state.player_state(p[0],p[1]).position.distance(but) < me.distance(ball))]
+		#s'il y a un adversaire plus proche des buts que moi
+		adv_danger = False if adv_but == [] else True
+		co = mstate.coeq_libre if mstate.coeq_libre !=[0, 0] else mstate.co_players[0] 
+		#normalement dans le else je met le plus proche
 		
-		co_idt = co[0]
-		co_idp = co[1]
-		pos_coeq_libre = mstate.state.player_state(co_idt, co_idp).position
+		pos_coeq_libre = mstate.state.player_state(co[0], co[1]).position
 		
 		
 		passer = mstate.shoot(pos_coeq_libre)
 	
-		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != None else degager
+		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != [0, 0] else degager
+		if (adv_danger == True) :
+			return mstate.aller(pos_base)
 		if (si_sort == True) :
-			return mstate.aller_ball + joue
+			return joue
+		#si l'adversaire est assez proche
+		elif (si_avance == True) :
+			return mstate.aller(ball/2)
 		else :
 			return mstate.aller(pos_base)
 # implementer quand le gardien sort, et son emplacement quand la balle est en defense et pour les defenseur et attaquants retour passe derriere au plus proche libre 

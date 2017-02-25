@@ -44,7 +44,7 @@ class MyState(object):
 	@property
 	def coeq_libre(self) :
 		if len(self.coeq_proche) == 0 :
-			return None
+			return [0, 0]
 		elif len(self.coeq_proche) == 1 :
 			return self.coeq_proche[0]
 		else :
@@ -58,12 +58,18 @@ class MyState(object):
 			return pp
 	@property
 	def aller_ball(self) :
-		if self.my_position.distance(self.ball_position) > 5:
-			return SoccerAction((self.ball_position-self.my_position) + 7*self.state.ball.vitesse  , Vector2D())
-		return SoccerAction((self.ball_position - self.my_position)/50)
+		#les cas ou je suis proche de la balle et elle va vite?
+		if self.my_position.distance(self.ball_position) > 10:
+			return SoccerAction((5 * self.state.ball.vitesse -(self.ball_position - self.my_position)), Vector2D())
+		elif self.my_position.distance(self.ball_position) > 5:
+			return SoccerAction((self.state.ball.vitesse -(self.ball_position - self.my_position))/2, Vector2D())
+		else :
+			SoccerAction((self.ball_position-self.my_position).normalize  , Vector2D())
+	
 	
 	def aller(self, p) :
 		return SoccerAction(p-self.my_position , Vector2D())
+	
 	
 	def shoot(self, p) :
 		if self.can_shoot :
@@ -142,7 +148,7 @@ class MyState(object):
 					angle = self.state.player_state(self.key[0], self.key[1]).acceleration
 					#v_but = self.state.player_state(self.key[0], self.key[1])._rd_angle(p_pos, angle, 1)
 					#a = self.state.player_state(self.key[0], self.key[1]).acceleration
-					print angle
+					#print angle
 					return self.shoot(self.but_adv)
 				else:
 						return self.aller(self.ball_position)
