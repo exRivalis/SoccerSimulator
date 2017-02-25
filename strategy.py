@@ -253,7 +253,7 @@ class Shooter(Strategy):
 		mstate = MyState(state, idteam, idplayer)
 		
 		#def shoot(self, k):
-		return SoccerAction(Vector2D(), k*(mstate.but_adv - mstate.my_position))
+		return SoccerAction(Vector2D(), (mstate.but_adv - mstate.my_position))
 		
 		"""class Shooter(Strategy):
 	def __init__(self, name="shooter"):
