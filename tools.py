@@ -106,6 +106,14 @@ class MyState(object):
 	
 	@property
 	def aller_ball(self) :
+		#les cas ou je suis proche de la balle et elle va vite?
+		if self.my_position.distance(self.ball_position) > 10:
+			return SoccerAction((5 * self.state.ball.vitesse +(self.ball_position - self.my_position)), Vector2D())
+		elif self.my_position.distance(self.ball_position) > 5:
+			return SoccerAction((self.state.ball.vitesse +(self.ball_position - self.my_position))/2, Vector2D())
+		else :
+			return SoccerAction((self.ball_position-self.my_position).normalize() , Vector2D())
+		"""
 		#print self.state.ball.vitesse
 		k = 4
 		v_ball = 2*k*self.v_ball if self.v_ball > Vector2D(1,1) else -1*k*self.my_v
@@ -116,6 +124,14 @@ class MyState(object):
 		elif self.dist_ball < 2:
 			return SoccerAction(Vector2D(), Vector2D())
 		return SoccerAction((self.ball_position - self.my_position + v_ball).normalize()/20, Vector2D())
+		"""
+		
+	def aller_ball_g(self) :
+		
+		if self.my_position.distance(self.ball_position) > 10:
+			return SoccerAction(5*(self.state.ball.vitesse -(self.my_position - self.ball_position)), Vector2D())
+		else :
+			return SoccerAction((self.state.ball.vitesse -(self.my_position - self.ball_position)), Vector2D())
 	#la balle dans mon camp?
 	@property
 	def ball_in_my_side(self):

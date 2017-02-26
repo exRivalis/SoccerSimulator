@@ -267,5 +267,50 @@ class Shooter(Strategy):
 		mstate = MyState(state, idteam, idplayer, k)
 		return SoccerAction(Vector2D(), k*(mstate.but_adv - mstate.my_position))
 		"""
+class Gardien(Strategy):
+	def __init__(self, name = "gardien"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+	
+	
+		sens = 1 if idteam == 1 else -1
+		
+		me = mstate.my_position
+
+		adv = mstate.adv_nearby_g
+		#(mstate.adv_nearby())
+		ball = mstate.ball_position
+		but_adv = mstate.but_adv
+		but = mstate.but
+		y_move = ((ball.y-45) * 15)/abs(ball.x - but.x)
+		pos_init = Vector2D(15, 45) if idteam == 1 else Vector2D(135, 45)
+		pos_base = pos_init + Vector2D(0, y_move) 
+		cote_attaque = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		cote_defense = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		adv_dist = me.distance(adv)
+		si_sort = True if (me.distance(ball) < adv.distance(ball) and ball.distance(but)<75) else False
+		si_avance = True if (me.distance(ball) < 2 * adv.distance(ball) and ball.distance(but)<35) else False
+		degager = mstate.shoot_g(but_adv)
+		#l'adversaire plus proches aux buts que le gardien
+		adv_but = [p for p in mstate.adv_players if (p.distance(but) < me.distance(ball))]
+		#s'il y a un adversaire plus proche des buts que moi
+		adv_danger = False if adv_but == [] else True
+
+		#normalement dans le else je met le plus proche
+		
+		pos_coeq_libre = mstate.coeq_libre if mstate.coeq_libre !=Vector2D else mstate.co_players[0]
 		
 		
+		passer = mstate.shoot_g(pos_coeq_libre)
+	
+		joue = passer if mstate.coeq_libre != Vector2D() else degager
+		if (adv_danger == True) :
+			return mstate.aller_g(pos_base)
+		elif (si_sort == True) :
+			return joue
+		#si l'adversaire est assez proche
+		elif (si_avance == True) :
+			return mstate.aller_g((ball + me)/2)
+		else :
+			return mstate.aller_g(pos_base)
