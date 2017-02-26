@@ -244,7 +244,7 @@ class Gardien(Strategy):
 			return joue
 		#si l'adversaire est assez proche
 		elif (si_avance == True) :
-			return mstate.aller(ball/2)
+			return mstate.aller((ball+me)/2)
 		else :
 			return mstate.aller(pos_base)
 # implementer quand le gardien sort, et son emplacement quand la balle est en defense et pour les defenseur et attaquants retour passe derriere au plus proche libre 

@@ -58,16 +58,17 @@ class MyState(object):
 			return pp
 	@property
 	def aller_ball(self) :
-		#les cas ou je suis proche de la balle et elle va vite?
+		
 		if self.my_position.distance(self.ball_position) > 10:
-			return SoccerAction((5 * self.state.ball.vitesse -(self.ball_position - self.my_position)), Vector2D())
-		elif self.my_position.distance(self.ball_position) > 5:
-			return SoccerAction((self.state.ball.vitesse -(self.ball_position - self.my_position))/2, Vector2D())
+			return SoccerAction(5*(self.state.ball.vitesse -(self.my_position - self.ball_position)), Vector2D())
 		else :
-			SoccerAction((self.ball_position-self.my_position).normalize  , Vector2D())
+			return SoccerAction((self.state.ball.vitesse -(self.my_position - self.ball_position)), Vector2D())
+	
 	
 	
 	def aller(self, p) :
+		if (p == self.ball_position) :
+			return self.aller_ball
 		return SoccerAction(p-self.my_position , Vector2D())
 	
 	
@@ -77,7 +78,7 @@ class MyState(object):
 		else :
 			return self.aller(self.ball_position)
 	
-			
+	
 	"""
 	@property
 	def attaque_droite(self):
