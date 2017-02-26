@@ -82,9 +82,48 @@ class TTactic(object):
 		
 	@property
 	def goal(self):
-		ms = MyState(self.state, self.idteam, self.idplayer)
+		mstate = MyState(state, idteam, idplayer)
+	
+	
+		sens = 1 if idteam == 1 else -1
 		
-		return ms.aller(ms.but)
+		me = mstate.my_position
+		adv = mstate.state.player_state(mstate.adv_nearby()[0], mstate.adv_nearby()[1]).position
+		#(mstate.adv_nearby())
+		ball = mstate.ball_position
+		but_adv = mstate.but_adv
+		but = mstate.but
+		y_move = ((ball.y-45) * 15)/abs(ball.x - but.x)
+		pos_init = Vector2D(10, 45) if idteam == 1 else Vector2D(140, 45)
+		pos_base = pos_init + Vector2D(0, y_move) 
+		cote_attaque = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		cote_defense = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		adv_dist = me.distance(adv)
+		si_sort = True if (me.distance(ball) < adv.distance(ball) and ball.distance(but)<75) else False
+		si_avance = True if (me.distance(ball) < 2 * adv.distance(ball) and ball.distance(but)<35) else False
+		degager = mstate.shoot(but_adv)
+		#l'adversaire plus proches aux buts que le gardien
+		adv_but = [p for p in mstate.adv_players if (mstate.state.player_state(p[0],p[1]).position.distance(but) < me.distance(ball))]
+		#s'il y a un adversaire plus proche des buts que moi
+		adv_danger = False if adv_but == [] else True
+		co = mstate.coeq_libre if mstate.coeq_libre !=[0, 0] else mstate.co_players[0] 
+		#normalement dans le else je met le plus proche
+		
+		pos_coeq_libre = mstate.state.player_state(co[0], co[1]).position
+		
+		
+		passer = mstate.shoot(pos_coeq_libre)
+	
+		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != [0, 0] else degager
+		if (adv_danger == True) :
+			return mstate.aller(pos_base)
+		if (si_sort == True) :
+			return joue
+		#si l'adversaire est assez proche
+		elif (si_avance == True) :
+			return mstate.aller(ball/2)
+		else :
+			return mstate.aller(pos_base)
 
 	@property
 	def	defendre(self):

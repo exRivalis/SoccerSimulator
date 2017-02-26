@@ -18,17 +18,17 @@ import math
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Strat,SoloTac, StratRien, Shooter
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Strat,SoloTac, StratRien, Shooter, Gardien
 
 #from tactic import *
 
 #simulation
 
-joueur1 = Player("player1", Shooter())
-joueur2 = Player("player2", StratRien())
+joueur1 = Player("player1", Solo())
+joueur2 = Player("player2", Attaquant())
 
-joueur3 = Player("player3", StratRien())
-joueur4 = Player("player4", StratRien())
+joueur3 = Player("player3", Attaquant())
+joueur4 = Player("player4", Gardien())
 
 
 #team1 = SoccerTeam("Eq1", [joueur1, joueur2])
@@ -52,5 +52,5 @@ TTeam2 = SoccerTeam("base", [joueur3, joueur4])
 
 #match = Simulation(STeam1, STeam2, 2000) #solo match
 match = Simulation(TTeam1, TTeam2, 2000) #Two match
-Observer(match)
+#Observer(match)
 show_simu(match)
