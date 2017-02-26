@@ -76,7 +76,7 @@ class MyState(object):
 		if self.can_shoot :
 			return SoccerAction(Vector2D(), p-self.my_position)  
 		else :
-			return self.aller(self.ball_position)
+			return self.aller_ball
 	
 	
 	"""
