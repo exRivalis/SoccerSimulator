@@ -243,8 +243,8 @@ class StratRien(Strategy):
 		mstate = MyState(state, idteam, idplayer)
 		tactic = STactic(state, idteam, idplayer)
 		
-		
-		return SoccerAction(Vector2D(), Vector2D())
+		return mstate.aller_but_adv
+		#return SoccerAction(Vector2D(), Vector2D())
 		
 class Shooter(Strategy):
 	def __init__(self, name="shooter"):
@@ -254,8 +254,12 @@ class Shooter(Strategy):
 		
 		k = mstate.my_position.distance(mstate.ball_position)
 		#def shoot(self, k):
-		return SoccerAction(Vector2D(), math.exp(k)*(mstate.but_adv - mstate.my_position))
+		#pour tirer dans la balle
+		#return SoccerAction(Vector2D(), math.exp(k)*(mstate.but_adv - mstate.my_position))
 		
+		
+		#pour aller a la balle
+		return mstate.aller_ball + mstate.passe(mstate.coeq_nearby)
 		"""class Shooter(Strategy):
 	def __init__(self, name="shooter"):
 		Strategy.__init__(self, name)

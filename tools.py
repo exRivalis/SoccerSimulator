@@ -49,6 +49,12 @@ class MyState(object):
 	@property
 	def v_coeq(self):
 		return self.state.player_state(self.key[0], (self.key[1] + 1)%2).vitesse
+		
+	#ma vitesse
+	@property
+	def my_v(self):
+		return self.state.player_state(self.key[0], self.key[1]).vitesse
+		
 	#return ma distance de la balle
 	@property
 	def dist_ball(self):
@@ -56,15 +62,14 @@ class MyState(object):
 	
 	
 	def aller(self, p) :
-		"""coefficient pour ralentir pres de la balle"""
-		coef = 0.005	
-		v = Vector2D(0, 0) if self.ball_position.distance(self.my_position) < 6 else self.v_ball
-		#si je suis proche de la balle ralentir
-		if self.dist_ball < 10 and self.sens*self.v_ball.x > 0:
-			return SoccerAction((p-self.my_position)/10)
-		#print SoccerAction(p-self.my_position).set_name("aller")
-		return SoccerAction(p-self.my_position)# + coef*p.distance(self.my_position) + v*4)
-
+		dist = self.my_position.distance(p)
+		if dist > 10:
+			return SoccerAction((p - self.my_position).normalize(), Vector2D())
+		elif dist > 5:
+			return SoccerAction((p - self.my_position).normalize()/5, Vector2D())
+		#elif dist < 1:
+		#	return SoccerAction(Vector2D(), Vector2D())
+		return SoccerAction((p - self.my_position).normalize()/20, Vector2D())
 		
 	
 	def shoot(self, p) :
@@ -78,6 +83,9 @@ class MyState(object):
 		
 	#passer la balle a un coeq
 	def passe(self, p) :
+		dist = self.my_position.distance(self.coeq_nearby)
+		return SoccerAction(Vector2D(), (p - self.my_position) + (dist)*self.v_coeq)
+	"""
 		if p.distance(self.but_adv) < 50:#si je suis proche des buts faire des passe douces
 			if p.distance(self.but_adv) > 20:
 				if self.my_position.y < 55 and self.my_position.y > 35 and p.distance(self.but_adv) < 1:# si je vide but_adv
@@ -94,13 +102,20 @@ class MyState(object):
 		if self.my_position.distance(p) < 30:
 				return SoccerAction(Vector2D(), (p - self.my_position))# doucement
 		return SoccerAction(Vector2D(), (p - self.my_position)/10)
+	"""
 	
 	@property
 	def aller_ball(self) :
 		#print self.state.ball.vitesse
-		if self.my_position.distance(self.ball_position) > 5:
-			return self.aller(self.ball_position)
-	
+		k = 4
+		v_ball = 2*k*self.v_ball if self.v_ball > Vector2D(1,1) else -1*k*self.my_v
+		if self.dist_ball > 10:
+			return self.aller(self.ball_position + v_ball)
+		elif self.dist_ball > 5:
+			return SoccerAction((self.ball_position - self.my_position + v_ball).normalize()/8, Vector2D())
+		elif self.dist_ball < 2:
+			return SoccerAction(Vector2D(), Vector2D())
+		return SoccerAction((self.ball_position - self.my_position + v_ball).normalize()/20, Vector2D())
 	#la balle dans mon camp?
 	@property
 	def ball_in_my_side(self):
