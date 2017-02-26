@@ -77,7 +77,7 @@ class MyState(object):
 	
 	def aller(self, p) :
 		dist = p.distance(self.my_position)
-		v_ball = mstate.v_ball
+		v_ball = self.v_ball
 		
 		if dist > 10:
 			return SoccerAction((p-self.my_position) , Vector2D())
@@ -86,10 +86,11 @@ class MyState(object):
 		return SoccerAction(math.log(dist)*(p-self.my_position).normalize() , Vector2D())
 	
 	def shoot(self, p) :
+		k = p.distance(self.my_position)
 		if self.can_shoot :
 			if self.my_position.distance(p) < 20 : 				
 				return SoccerAction(Vector2D(),(p-self.my_position)/2)
-			return SoccerAction(Vector2D(), p-self.my_position)  
+			return SoccerAction(Vector2D(), math.exp(k)*(p-self.my_position))  
 		else :
 			return self.aller(self.ball_position)
 	@property
