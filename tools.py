@@ -96,17 +96,31 @@ class MyState(object):
 		return SoccerAction((p-self.my_position).normalize() , Vector2D())
 	
 	def shoot(self, p) :
-		k = p.distance(self.my_position)
+		k = p.distance(self.my_position)/300
 		if self.can_shoot :
-			if self.my_position.distance(p) < 20 : 				
-				return SoccerAction(Vector2D(),(p-self.my_position)/2)
-			return SoccerAction(Vector2D(), math.exp(k)*(p-self.my_position))  
+			if self.sens * self.my_position.x < self.sens * 10 : 	
+				if self.my_position.y > 65 or self.my_position.y < 25 :
+					return self.rebond #voir la variable step, et rajouter une variable dans le state a 5 par exp et je decremente a chaque tour
+				return self.tire(p-self.my_position)
+			#	return SoccerAction(Vector2D(),(p-self.my_position)/2)
+			return self.tire(k*(p-self.my_position))  
 		else :
+			#attendre 5 tours
 			return self.aller(self.ball_position)
+	
+	@property
+	def rebond(self): #a ammeliorer encore
+		if self.my_position.y < 30 :
+			return self.tire(self.sens * Vector2D(10, self.but_adv.y-self.my_position.y)) + self.aller(self.my_position + Vector2D(5 * self.sens * -1, 25)
+		else:
+			return self.tire(self.but_adv)
+	
+	def tire(self, v):
+		return SoccerAction(Vector2D(), v)
+	
 	@property
 	def tirer(self):
-		k = self.my_position.distance(self.ball_position)
-		return SoccerAction(Vector2D(), math.exp(k)*(self.but_adv - self.my_position))
+		return SoccerAction(Vector2D(), (self.but_adv - self.my_position))
 			
 	"""
 	@property
@@ -138,10 +152,9 @@ class MyState(object):
 		#k = dist/ 
 		player = self.state.player_state(p[0], p[1])
 		v_p = player.vitesse
-		vect =( j_pos + math.exp(dist/15)*v_p ) - self.my_position
-		print dist
+		vect =( j_pos + math.log(dist*3)*v_p ) - self.my_position
 		return SoccerAction(Vector2D(), vect)
-	
+	#log(dist*3) : proche 9/11, moyen 6/11, 7/11
 	
 	def adv_nearbyj(self, idteam, idplayer) :
 		if self.idteam == idteam :

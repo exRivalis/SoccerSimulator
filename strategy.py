@@ -264,5 +264,5 @@ class StratTest(Strategy):
 		
 		#joueur = mstate.state.player_state(mstate.coeq_nearby()[0], mstate.coeq_nearby()[1]).position
 		if mstate.can_shoot:
-			return mstate.passe(mstate.coeq_nearby())
-		return mstate.aller(mstate.ball_position)
+			return mstate.tirer
+		#return mstate.aller(mstate.ball_position)
