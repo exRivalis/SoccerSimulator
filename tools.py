@@ -40,7 +40,9 @@ class MyState(object):
 		#distance de la balle
 		self.dist_ball = self.my_position.distance(self.ball_position)
 		
+		#mon vecteur vitesse
 		self.my_v = self.state.player_state(self.key[0], self.key[1]).vitesse
+		
 		#est proche de la balle
 		self.near_ball = True if self.my_position.distance(self.ball_position) < 20 else False
 		

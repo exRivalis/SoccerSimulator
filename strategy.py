@@ -15,6 +15,11 @@ import math
 
 from tools import MyState
 
+#pour debug
+import logging
+logger = logging.getLogger("name")
+
+
 ## Strategie aleatoire
 class RandomStrategy(Strategy):
     def __init__(self):
@@ -232,7 +237,12 @@ class Gardien(Strategy):
 # implementer quand le gardien sort, et son emplacement quand la balle est en defense et pour les defenseur et attaquants retour passe derriere au plus proche libre 
 
 
-
-
-
+"""
+import logging
+logger = logging.getLogger("name")
+logger.info("")
+		.debug
+		.warning
+logger.basicConfig(level = logging.INFO)
+"""
 
