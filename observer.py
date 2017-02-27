@@ -14,7 +14,7 @@ from soccersimulator import settings
 import math
 
 class Observer(object):
-	MAX_STEP = 250
+	MAX_STEP = 80
 	def __init__(self, simu):
 		self.simu = simu
 		self.simu.listeners += self #ajout de l'observer
@@ -31,8 +31,8 @@ class Observer(object):
 		
 		#pour aller balle
 		self.simu.state.ball.position = ball
-		self.simu.state.states[(1, 0)].position = ball - Vector2D(40, 10)
-		
+		self.simu.state.states[(1, 0)].position = ball + Vector2D(10, 20)#position joueur 0
+		self.simu.state.states[(1,1)].position = ball - Vector2D(25, 15)#position joueur qui a la balle
 		#print self.simu.team1.strategies[0].compute_strategy(self.simu.state, 1, 0) 
 		#self.simu.shoot = Vector2D(10, 0)
 		self.last = self.simu.step

@@ -30,6 +30,12 @@ class MyState(object):
 		
 		#can the player shoot in the ball
 		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
+		#nouvelles motif pour simplifier
+		self.sens = 1 if self.key[0] == 1 else -1
+		
+		
+		
+		
 		
 		#side of adv
 		self.adv_on_right = 1 if self.state.player_state(self.adv_players[0][0], self.adv_players[0][1]).position.y > self.my_position.y else -1
@@ -39,6 +45,8 @@ class MyState(object):
 		
 		#distance de la balle
 		self.dist_ball = self.my_position.distance(self.ball_position)
+		
+		
 		
 		#mon vecteur vitesse
 		self.my_v = self.state.player_state(self.key[0], self.key[1]).vitesse
@@ -85,7 +93,7 @@ class MyState(object):
 			return SoccerAction((p-self.my_position) , Vector2D())
 		elif dist > 5:
 			return SoccerAction((p-self.my_position) , Vector2D())
-		return SoccerAction(math.log(dist)*(p-self.my_position).normalize() , Vector2D())
+		return SoccerAction((p-self.my_position).normalize() , Vector2D())
 	
 	def shoot(self, p) :
 		k = p.distance(self.my_position)
@@ -124,7 +132,15 @@ class MyState(object):
 	def pos_j(self, p):
 		return self.state.player_state(p[0], p[1]).position
 		
-	
+	def passe(self, p):
+		j_pos = self.pos_j(p)
+		dist = self.my_position.distance(j_pos) 
+		#k = dist/ 
+		player = self.state.player_state(p[0], p[1])
+		v_p = player.vitesse
+		vect =( j_pos + math.exp(dist/15)*v_p ) - self.my_position
+		print dist
+		return SoccerAction(Vector2D(), vect)
 	
 	
 	def adv_nearbyj(self, idteam, idplayer) :
@@ -136,10 +152,12 @@ class MyState(object):
 	
 		#recup adv le plus proche
 	def coeq_nearby(self):
+		
 		players = self.co_players
 		"""if len(players) == 1:
 			return """
 		pp = players[0]
+		
 		for p in players:
 			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
 			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)

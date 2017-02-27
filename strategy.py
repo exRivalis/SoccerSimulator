@@ -245,4 +245,24 @@ logger.info("")
 		.warning
 logger.basicConfig(level = logging.INFO)
 """
+class StratARien(Strategy):
+	def __init__(self, name = "sert_a_rien"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		
+		return SoccerAction(Vector2D(0,0), Vector2D())
 
+class StratTest(Strategy):
+	def __init__(self, name = "tester"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		mstate = MyState(state, idteam, idplayer)
+		
+		if mstate.key[1] == 0:
+			return mstate.aller(mstate.but_adv)
+		
+		#joueur = mstate.state.player_state(mstate.coeq_nearby()[0], mstate.coeq_nearby()[1]).position
+		if mstate.can_shoot:
+			return mstate.passe(mstate.coeq_nearby())
+		return mstate.aller(mstate.ball_position)
