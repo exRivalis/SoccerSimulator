@@ -24,7 +24,7 @@ sydney = Player("Keeper", Gardien())
 solo = Player("miche-miche", SoloStrat())
 
 maestro = Player("Maestro", AttaquantPlus())
-leanardo = Player("Leo", Defenseur())
+leonardo = Player("Leo", Defenseur())
 
 
 
