@@ -18,28 +18,14 @@ from tools import MyState
 
 from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloStrat, Solo, Gardien
 
-jean = Player("Drexor", Attaquant())
-sydney = Player("Keeper", Gardien())
+joueur1 = Player("player1", Attaquant())
+joueur2 = Player("player2", Gardien())
 
-solo = Player("miche-miche", SoloStrat())
+joueur3 = Player("player3", Solo())
+joueur4 = Player("player4", AttaquantPlus())
 
-maestro = Player("Maestro", AttaquantPlus())
-leonardo = Player("Leo", Defenseur())
-
-
-
-team1 = SoccerTeam("Curly", [solo])
+team1 = SoccerTeam("Eq1", [joueur3])
 
 
 
-team2 = SoccerTeam("Two", [jean, sydney])
-
-team4 = SoccerTeam("GangOfFour",[jean, sydney, maestro, leonardo])
-
-
-def get_team(i):
-	if i == 1:
-		return team1
-	elif i == 4:
-		return team4
-	return team2
+team2 = SoccerTeam("Eq2", [joueur1, joueur2])

@@ -30,26 +30,10 @@ class MyState(object):
 		
 		#can the player shoot in the ball
 		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
-		#nouvelles motif pour simplifier
-		self.sens = 1 if self.key[0] == 1 else -1
-		
-		
-		
-		
 		
 		#side of adv
 		self.adv_on_right = 1 if self.state.player_state(self.adv_players[0][0], self.adv_players[0][1]).position.y > self.my_position.y else -1
 		
-		#vitesse balle
-		self.v_ball = self.state.ball.vitesse
-		
-		#distance de la balle
-		self.dist_ball = self.my_position.distance(self.ball_position)
-		
-		
-		
-		#mon vecteur vitesse
-		self.my_v = self.state.player_state(self.key[0], self.key[1]).vitesse
 		
 		#est proche de la balle
 		self.near_ball = True if self.my_position.distance(self.ball_position) < 20 else False
@@ -75,74 +59,25 @@ class MyState(object):
 	@property
 	def aller_ball(self) :
 		#les cas ou je suis proche de la balle et elle va vite?
-		v_ball = self.v_ball
-		dist = self.dist_ball
-		k = (v_ball*3+(self.ball_position - self.my_position))
-		joue = SoccerAction(k, Vector2D())
-		if self.dist_ball > 10:
-			return joue
-		elif self.dist_ball > 3:
-			return SoccerAction((self.ball_position - self.my_position)/2, Vector2D())
+		if self.my_position.distance(self.ball_position) > 10:
+			return SoccerAction((5 * self.state.ball.vitesse -(self.ball_position - self.my_position)), Vector2D())
+		elif self.my_position.distance(self.ball_position) > 5:
+			return SoccerAction((self.state.ball.vitesse -(self.ball_position - self.my_position))/2, Vector2D())
 		else :
-			return SoccerAction((self.ball_position - self.my_position).normalize(), Vector2D())
+			SoccerAction((self.ball_position-self.my_position).normalize  , Vector2D())
 	
-	
-	"""def aller(self, p) :
-		dist = p.distance(self.my_position)
-		v_ball = self.v_ball
-		k = (p-self.my_position)/300
-		if dist > 10:
-			return SoccerAction((p-self.my_position) , Vector2D())
-		elif dist > 5:
-			return SoccerAction((p-self.my_position) , Vector2D())
-		return SoccerAction((p-self.my_position) , Vector2D())"""
 	
 	def aller(self, p) :
-		#self.all_players_p
-		dist = p.distance(self.my_position)
-		v_ball = self.v_ball
-		vec_dest = p-self.my_position
-		if dist < 10:
-			return SoccerAction(((dist/4)%20000)*vec_dest, Vector2D())
-		return SoccerAction(((math.exp(dist-10))%20000)*vec_dest, Vector2D())
+		return SoccerAction(p-self.my_position , Vector2D())
+	
 	
 	def shoot(self, p) :
-		k = p.distance(self.my_position)/300
 		if self.can_shoot :
-			if (self.sens == 1 and self.my_position.x > 140) or (self.sens == -1 and self.my_position.x < 10) : 	
-				if self.my_position.y > 70 or self.my_position.y < 20 :
-					return self.drible()
-					#return self.rebond #voir la variable step, et rajouter une variable dans le state a 5 par exp et je decremente a chaque tour
-				return self.tire(p-self.my_position)
-			#	return SoccerAction(Vector2D(),(p-self.my_position)/2)
-	#sinon dans tout les autres cas
-		if self.can_shoot :
-			if self.my_position.distance(p) < 20 :
-				return self.tire((p-self.my_position)*2)
-			return self.tire(k*(p-self.my_position))  
+			if self.my_position.distance(p) < 20 : 				return SoccerAction(Vector2D(),(p-self.my_position)/2)
+			return SoccerAction(Vector2D(), p-self.my_position)  
 		else :
-			#attendre 5 tours
-			return self.aller_ball
+			return self.aller(self.ball_position)
 	
-	@property
-	def go_but(self):
-		if self.can_shoot:
-			return self.tire(((self.but_adv-self.my_position).normalize())*3)
-		return self.aller_ball
-	
-	@property
-	def rebond(self): #a ammeliorer encore
-		if self.my_position.y < 30 :
-			return self.tire(self.sens * Vector2D(10, self.but_adv.y-self.my_position.y)) + self.aller(self.my_position + Vector2D(5 * self.sens * -1, 25))
-		else:
-			return self.tire(self.but_adv)
-	
-	def tire(self, v):
-		return SoccerAction(Vector2D(), v)
-	
-	@property
-	def tirer(self):
-		return SoccerAction(Vector2D(), (self.but_adv - self.my_position))
 			
 	"""
 	@property
@@ -168,18 +103,8 @@ class MyState(object):
 	def pos_j(self, p):
 		return self.state.player_state(p[0], p[1]).position
 		
-	def passe(self, p):
-		player = self.state.player_state(p[0], p[1])
-		j_pos = player.position
-		dist = self.my_position.distance(j_pos) 
-		#k = dist/ 
-		player = self.state.player_state(p[0], p[1])
-		v_p = player.vitesse
-		vect =( j_pos + math.log(dist*3)*v_p ) - self.my_position
-		if self.can_shoot :
-			return SoccerAction(Vector2D(), vect)
-		return self.aller(self.ball_position)
-	#log(dist*3) : proche 9/11, moyen 6/11, 7/11
+	
+	
 	
 	def adv_nearbyj(self, idteam, idplayer) :
 		if self.idteam == idteam :
@@ -190,12 +115,10 @@ class MyState(object):
 	
 		#recup adv le plus proche
 	def coeq_nearby(self):
-		
 		players = self.co_players
 		"""if len(players) == 1:
 			return """
 		pp = players[0]
-		
 		for p in players:
 			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
 			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
@@ -227,17 +150,26 @@ class MyState(object):
 		if sens == 1 :
 			if me.x < adv_pos.x :
 				if me.y < adv_pos.y :
-					return self.shoot(self.ball_position + sens*Vector2D(10, -10)) # + self.aller(self.ball_position + sens*Vector2D(10, -10))
+					return self.shoot(self.ball_position + sens*Vector2D(10, -10)) + self.aller(self.ball_position + sens*Vector2D(10, -10))
 				else :
-					return self.shoot(self.ball_position+ sens*Vector2D(10, 10)) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
+					return self.shoot(self.ball_position+ sens*Vector2D(10, 10)) + self.aller(self.ball_position + sens*Vector2D(10, -10))
+			else :
+				return self.shoot((self.but_adv+me)/2)
 		else :
 			if me.x > adv_pos.x :
 				if me.y	< adv_pos.y :
-					return self.shoot(self.ball_position + sens*Vector2D(10, 10)) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))	
+					return self.shoot(self.ball_position + sens*Vector2D(10, 10)) + self.aller(self.ball_position + sens*Vector2D(10, -10))	
 				else:
-					return self.shoot(self.ball_position+ sens*Vector2D(10, -10)) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
-		return self.shoot((self.but_adv+me)/2)
+					return self.shoot(self.ball_position+ sens*Vector2D(10, -10)) + self.aller(self.ball_position + sens*Vector2D(10, -10))
+			else :
+				return self.shoot((self.but_adv+me)/2)
 						
+
+
+
+
+
+
 
 
 
