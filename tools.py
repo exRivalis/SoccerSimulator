@@ -103,8 +103,10 @@ class MyState(object):
 		v_ball = self.v_ball
 		vec_dest = p-self.my_position
 		if dist < 10:
-			return SoccerAction(((dist/4)%20000)*vec_dest, Vector2D())
-		return SoccerAction(((math.exp(dist-10))%20000)*vec_dest, Vector2D())
+			k = ((dist/4)%20)
+			return SoccerAction(k*vec_dest, Vector2D())
+		k = ((math.exp(dist-10))%20)
+		return SoccerAction(k*vec_dest, Vector2D())
 	
 	def shoot(self, p) :
 		k = p.distance(self.my_position)/300
@@ -161,7 +163,11 @@ class MyState(object):
 		for p in players:
 			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
 			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
-			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
+			ps_pp = self.state.player_state(pp[0], pp[1])
+			dist_pp = self.my_position.distance(ps_pp.position)
+			ps_p = self.state.player_state(p[0], p[1])
+			dist_p = self.my_position.distance(ps_p.position)
+			if dist_p < dist_pp :
 				pp = p
 		return pp
 	
@@ -215,11 +221,7 @@ class MyState(object):
 				
 	def drible(self) :
 		adv = self.adv_nearby()
-		sens = 1
-		if adv[0] == 2 :
-			sens = 1
-		else:
-			sens = -1
+		sens = self.sens
 		
 		me = self.my_position
 		adv_pos = self.state.player_state(adv[0], adv[1]).position
@@ -227,25 +229,13 @@ class MyState(object):
 		if sens == 1 :
 			if me.x < adv_pos.x :
 				if me.y < adv_pos.y :
-					return self.shoot(self.ball_position + sens*Vector2D(10, -10)) # + self.aller(self.ball_position + sens*Vector2D(10, -10))
+					return self.shoot((self.ball_position + sens*Vector2D(10, -10)).normalize()*7) # + self.aller(self.ball_position + sens*Vector2D(10, -10))
 				else :
-					return self.shoot(self.ball_position+ sens*Vector2D(10, 10)) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
+					return self.shoot((self.ball_position + sens*Vector2D(10, 10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
 		else :
 			if me.x > adv_pos.x :
 				if me.y	< adv_pos.y :
-					return self.shoot(self.ball_position + sens*Vector2D(10, 10)) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))	
+					return self.shoot((self.ball_position + sens*Vector2D(10, 10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))	
 				else:
-					return self.shoot(self.ball_position+ sens*Vector2D(10, -10)) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
+					return self.shoot((self.ball_position + sens*Vector2D(10, -10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
 		return self.shoot((self.but_adv+me)/2)
-						
-
-
-
-
-
-
-
-
-
-
-

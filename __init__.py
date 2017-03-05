@@ -21,10 +21,10 @@ from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloSt
 jean = Player("Drexor", Attaquant())
 sydney = Player("Keeper", Gardien())
 
-solo = Player("miche-miche", SoloStrat())
+solo = Player("miche-miche", Solo())
 
 maestro = Player("Maestro", AttaquantPlus())
-leanardo = Player("Leo", Defenseur())
+leonardo = Player("Leo", Defenseur())
 
 
 
