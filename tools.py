@@ -232,10 +232,10 @@ class MyState(object):
 					return self.shoot((self.ball_position + sens*Vector2D(10, -10)).normalize()*7) # + self.aller(self.ball_position + sens*Vector2D(10, -10))
 				else :
 					return self.shoot((self.ball_position + sens*Vector2D(10, 10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
+		elif me.x > adv_pos.x :
+			if me.y	< adv_pos.y :
+				return self.shoot((self.ball_position + sens*Vector2D(10, 10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))	
+			else:
+				return self.shoot((self.ball_position + sens*Vector2D(10, -10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
 		else :
-			if me.x > adv_pos.x :
-				if me.y	< adv_pos.y :
-					return self.shoot((self.ball_position + sens*Vector2D(10, 10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))	
-				else:
-					return self.shoot((self.ball_position + sens*Vector2D(10, -10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
-		return self.shoot((self.but_adv+me)/2)
+			return self.shoot((self.but_adv+me)/2)
