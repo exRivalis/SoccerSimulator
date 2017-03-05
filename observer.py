@@ -31,8 +31,8 @@ class Observer(object):
 		
 		#pour aller balle
 		self.simu.state.ball.position = ball
-		self.simu.state.states[(1, 0)].position = ball + Vector2D(150, 45)#position joueur 0
-		self.simu.state.states[(1,1)].position = ball - Vector2D(0, 0)#position joueur qui a la balle
+		self.simu.state.states[(1, 0)].position = ball - Vector2D(70, 45)#position joueur 0
+		self.simu.state.states[(1,1)].position = ball - Vector2D(10, 10)#position joueur qui a la balle
 		#print self.simu.team1.strategies[0].compute_strategy(self.simu.state, 1, 0) 
 		#self.simu.shoot = Vector2D(10, 0)
 		self.last = self.simu.step

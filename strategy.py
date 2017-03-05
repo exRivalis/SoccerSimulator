@@ -55,8 +55,9 @@ class Attaquant(Strategy):
 		"""
 		if mstate.my_position.distance(mstate.but_adv) >30 :
 			if mstate.my_position.distance(mstate.state.player_state(adv[0], adv[1]).position) < 15 :
-				if mstate.can_shoot :
-					return mstate.drible()
+				return mstate.drible()
+			return mstate.go_but
+		return mstate.shoot(mstate.but_adv)
 		#return mstate.adv_nearby()
 		if mstate.key[1] == 0:
 			me_b = mstate.my_position.distance(mstate.ball_position)
@@ -258,11 +259,9 @@ class StratTest(Strategy):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
 		mstate = MyState(state, idteam, idplayer)
-		
 		if mstate.key[1] == 0:
-			return mstate.aller(mstate.but_adv)
+			return mstate.shoot(mstate.but_adv)
 		
 		#joueur = mstate.state.player_state(mstate.coeq_nearby()[0], mstate.coeq_nearby()[1]).position
-		if mstate.can_shoot:
-			return mstate.tirer
+		return mstate.passe(mstate.coeq_nearby())
 		#return mstate.aller(mstate.ball_position)
