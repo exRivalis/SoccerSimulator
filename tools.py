@@ -29,7 +29,7 @@ class MyState(object):
 		self.adv_players = [p  for p in self.all_players if p[0] != self.key[0]]
 		
 		#can the player shoot in the ball
-		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
+		self.can_shoot = True if self.my_position.distance(self.ball_position) <= (settings.PLAYER_RADIUS + settings.BALL_RADIUS) else False
 		#nouvelles motif pour simplifier
 		self.sens = 1 if self.key[0] == 1 else -1
 		
@@ -79,9 +79,9 @@ class MyState(object):
 		dist = self.dist_ball
 		k = (v_ball*3+(self.ball_position - self.my_position))
 		joue = SoccerAction(k, Vector2D())
-		if self.dist_ball > 10:
+		if self.dist_ball > 11:
 			return joue
-		elif self.dist_ball > 3:
+		elif self.dist_ball > 4:
 			return SoccerAction((self.ball_position - self.my_position)/2, Vector2D())
 		else :
 			return SoccerAction((self.ball_position - self.my_position).normalize(), Vector2D())
@@ -110,12 +110,12 @@ class MyState(object):
 	
 	def shoot(self, p) :
 		k = p.distance(self.my_position)/300
-		if self.can_shoot :
+		"""if self.can_shoot :
 			if (self.sens == 1 and self.my_position.x > 140) or (self.sens == -1 and self.my_position.x < 10) : 	
 				if self.my_position.y > 70 or self.my_position.y < 20 :
 					return self.drible()
 					#return self.rebond #voir la variable step, et rajouter une variable dans le state a 5 par exp et je decremente a chaque tour
-				return self.tire(p-self.my_position)
+				return self.tire(p-self.my_position)"""
 			#	return SoccerAction(Vector2D(),(p-self.my_position)/2)
 	#sinon dans tout les autres cas
 		if self.can_shoot :
