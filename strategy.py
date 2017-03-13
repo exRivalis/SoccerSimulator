@@ -1,5 +1,5 @@
 #les objets de base
-from soccersimulator import Vector2D, SoccerState, SoccerAction
+from soccersimulator import Vector2D, SoccerState, SoccerAction, KeyboardStrategy
 
 #objets pour un match
 from soccersimulator import Simulation, SoccerTeam, Player, show_simu, SoccerTournament
@@ -54,7 +54,7 @@ class Attaquant(Strategy):
 			return mstate.go_but
 		return mstate.shoot(mstate.but_adv)
 		#return mstate.adv_nearby()
-		if mstate.key[1] == 0:
+		"""if mstate.key[1] == 0:
 			me_b = mstate.my_position.distance(mstate.ball_position)
 			other_b = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.ball_position)
 			
@@ -81,6 +81,7 @@ class Attaquant(Strategy):
 		adv_w_ball = mstate.adv_players[0] if mstate.state.player_state(mstate.adv_players[0][0], mstate.adv_players[0][1]).position.distance(mstate.ball_position) < mstate.state.player_state(mstate.adv_players[1][0], mstate.adv_players[1][1]).position.distance(mstate.ball_position) else mstate.adv_players[1]
 			
 		return mstate.aller(mstate.state.player_state(adv_w_ball[0], adv_w_ball[1]).position)	
+	"""
 
 class SoloStrat(Strategy):
 	def __init__(self, name="soloStrategy"):
@@ -341,6 +342,5 @@ class StratARien(Strategy):
 		return SoccerAction(Vector2D(0,0), Vector2D())
 
 
-
-
+#changement de strategies avec le clavier
 

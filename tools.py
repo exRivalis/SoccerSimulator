@@ -105,7 +105,7 @@ class MyState(object):
 		if dist < 10:
 			k = ((dist/4)%20)
 			return SoccerAction(k*vec_dest, Vector2D())
-		k = ((math.exp(dist-10))%20)
+		k = (dist)
 		return SoccerAction(k*vec_dest, Vector2D())
 	
 	def shoot(self, p) :
