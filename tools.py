@@ -95,8 +95,9 @@ class MyState(object):
 			norm_base = self.v_ball.norm 
 			norm_fin = (norm_base-(5 * settings.ballBrakeConstant)) * (1 - (2 * settings.ballBrakeSquare)) - (settings.ballBrakeConstant * norm_base)
 			ball_pos_fin = self.ball_position + (self.v_ball.normalize() * norm_fin)
-		print ball_pos_fin
-		#return ball_pos_fin
+		
+		#print ball_pos_fin
+		return ball_pos_fin
 	"""def aller(self, p) :
 		dist = p.distance(self.my_position)
 		v_ball = self.v_ball
@@ -129,6 +130,10 @@ class MyState(object):
 			#	return SoccerAction(Vector2D(),(p-self.my_position)/2)
 	#sinon dans tout les autres cas
 		if self.can_shoot :
+			
+			#print self.ball_position
+			#i = self.predict_ball
+			#print i
 			if self.my_position.distance(p) < 20 :
 				return self.tire((p-self.my_position)*2)
 			return self.tire(k*(p-self.my_position))  
