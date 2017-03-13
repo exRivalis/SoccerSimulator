@@ -86,7 +86,17 @@ class MyState(object):
 		else :
 			return SoccerAction((self.ball_position - self.my_position).normalize(), Vector2D())
 	
-	
+	@property
+	def predict_ball(self):
+		norm_base = self.v_ball.norm 
+		norm_fin = (norm_base-(5 * settings.ballBrakeConstant)) * (1 - (2 * settings.ballBrakeSquare)) - (settings.ballBrakeConstant * norm_base)
+		ball_pos_fin = self.ball_position + (self.v_ball.normalize() * norm_fin)
+		for i in range (0, 15):
+			norm_base = self.v_ball.norm 
+			norm_fin = (norm_base-(5 * settings.ballBrakeConstant)) * (1 - (2 * settings.ballBrakeSquare)) - (settings.ballBrakeConstant * norm_base)
+			ball_pos_fin = self.ball_position + (self.v_ball.normalize() * norm_fin)
+		print ball_pos_fin
+		#return ball_pos_fin
 	"""def aller(self, p) :
 		dist = p.distance(self.my_position)
 		v_ball = self.v_ball
