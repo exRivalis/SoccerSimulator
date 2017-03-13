@@ -4,11 +4,17 @@ import logging
 from arbres_utils import build_apprentissage,affiche_arbre,DTreeStrategy,apprend_arbre,genere_dot
 from sklearn.tree 	import export_graphviz
 from sklearn.tree import DecisionTreeClassifier
+
+#toolbox
+from tools import MyState
+
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien
+
 import os.path
 ## Strategie aleatoire
 class FonceStrategy(Strategy):
     def __init__(self):
-        super(FonceStrategy,self).__init__("Fonce")
+        super(FonceStrategy,self).__init__("Fonce2")
     def compute_strategy(self,state,id_team,id_player):
         return SoccerAction(state.ball.position-state.player_state(id_team,id_player).position,\
                 Vector2D((2-id_team)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.)-state.ball.position)
@@ -25,12 +31,18 @@ class StaticStrategy(Strategy):
 
 team1 = SoccerTeam("team1")
 strat_j1 = KeyboardStrategy()
-strat_j1.add('a',FonceStrategy())
+strat_j1.add('a',Attaquant())
 strat_j1.add('z',StaticStrategy())
+strat_j1.add('g', Gardien())
+
 team1.add("Jexp 1",strat_j1)
 team1.add("Jexp 2",StaticStrategy())
 team2 = SoccerTeam("team2")
-team2.add("rien 1", StaticStrategy())
+strat_j2 = KeyboardStrategy()
+strat_j2.add('e',Attaquant())
+strat_j2.add('r',StaticStrategy())
+strat_j2.add('h', Gardien())
+team2.add("rien 1", strat_j2)
 team2.add("rien 2", StaticStrategy())
 
 
@@ -38,9 +50,9 @@ team2.add("rien 2", StaticStrategy())
 def my_get_features(state,idt,idp):
     """ extraction du vecteur de features d'un etat, ici distance a la balle, distance au but, distance balle but """
     p_pos= state.player_state(idt,idp).position
-    f1 = p_pos.distance(state.ball.position)
-    f2= p_pos.distance( Vector2D((2-idt)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.))
-    f3 = state.ball.position.distance(Vector2D((2-idt)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.))
+    f1 = p_pos.distance(state.ball.position) #ma distance de la balle
+    f2= p_pos.distance( Vector2D((2-idt)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.))#dist but
+    f3 = state.ball.position.distance(Vector2D((2-idt)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.))#dist but ball
     return [f1,f2,f3]
 
 
@@ -67,18 +79,22 @@ def jouer_arbre(dt):
     ####
     # Utilisation de l'arbre
     ###
-    dic = {"Fonce":FonceStrategy(),"Static":StaticStrategy()}
+    dic = {"Attaquant":Attaquant(),"Static":StaticStrategy(), "Gardien":Gardien()}
     treeStrat1 = DTreeStrategy(dt,dic,my_get_features)
     treeStrat2 = DTreeStrategy(dt,dic,my_get_features)
     team3 = SoccerTeam("Arbre Team")
     team3.add("Joueur 1",treeStrat1)
     team3.add("Joueur 2",treeStrat2)
-    simu = Simulation(team2,team3)
+    simu = Simulation(team2,team1)
     show_simu(simu)
 
 if __name__=="__main__":
     fn = "test_states.jz"
-    if not os.path.isfile(fn):
-        entrainement(fn)
+    #if not os.path.isfile(fn):
+    #for i in range(0, 10):
+    entrainement(fn)
     dt = apprentissage(fn)
     jouer_arbre(dt)
+    
+   
+#cpickle.load/dump pour lecture/ecriture dans un fichier, fin je crois hein!

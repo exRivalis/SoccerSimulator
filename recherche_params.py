@@ -2,6 +2,7 @@
 from soccersimulator import settings
 from soccersimulator import SoccerTeam, Simulation, Strategy, show_simu, Vector2D, SoccerAction
 
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien
 
 import numpy as np
 import logging

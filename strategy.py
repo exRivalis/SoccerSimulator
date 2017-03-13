@@ -25,7 +25,7 @@ class RandomStrategy(Strategy):
 #creation strategy
 class Attaquant(Strategy):
 	
-	def __init__(self, name="attaquant"):
+	def __init__(self, name="Attaquant"):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
 		#on cree un objet qui sera notre joueur et sur lequel on agira
@@ -222,7 +222,7 @@ class Defenseur(Strategy):
 		#return mstate.aller(mstate.ball_position()) + mstate.shoot(mstate.but_adv())
 		
 class Gardien(Strategy):
-	def __init__(self, name = "gardien"):
+	def __init__(self, name = "Gardien"):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
 		mstate = MyState(state, idteam, idplayer)
