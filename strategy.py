@@ -246,7 +246,7 @@ class Gardien(Strategy):
 		ball = mstate.ball_position
 		but_adv = mstate.but_adv
 		but = mstate.but
-		y_move = ((ball.y-45) * 15)/abs(ball.x - but.x)
+		y_move = ((ball.y-45) * 15)/abs(ball.x - but.x) if abs(ball.x-but.x)>3 else 0
 		pos_init = Vector2D(10, 45) if idteam == 1 else Vector2D(140, 45)
 		pos_base = pos_init + Vector2D(0, y_move) 
 		cote_attaque = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
@@ -260,6 +260,7 @@ class Gardien(Strategy):
 		#s'il y a un adversaire plus proche des buts que moi
 		adv_danger = False if adv_but == [] else True
 		co = mstate.coeq_libre if mstate.coeq_libre !=[0, 0] else mstate.co_players[0] 
+		co_pos = mstate.state.player_state(mstate.co_players[0][0], mstate.co_players[0][1]).position
 		#normalement dans le else je met le plus proche
 		
 		pos_coeq_libre = mstate.state.player_state(co[0], co[1]).position
@@ -268,6 +269,20 @@ class Gardien(Strategy):
 		passer = mstate.shoot(pos_coeq_libre)
 	
 		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != [0, 0] else degager
+		
+		me_ball = me.distance(ball+mstate.v_ball*10)
+		co_ball = co_pos.distance(mstate.ball_position+mstate.v_ball*10)
+		adv = mstate.adv_danger_but()
+		pos_adv = mstate.state.player_state(adv[0], adv[1]).position
+		pos_contre = pos_adv + Vector2D(-11,0) if sens == 1 else pos_adv + Vector2D(11, 0)
+		adv_ball = pos_adv.distance(mstate.ball_position+mstate.v_ball*10)
+		
+		if co_ball < adv_ball and ball.distance(but) > 65:
+			if me_ball < co_ball:
+				return mstate.shoot(co_pos)
+			else :
+				return mstate.aller(pos_contre)
+		
 		if (adv_danger == True) :
 			if mstate.my_position !=pos_base :
 				return mstate.aller(pos_base)
