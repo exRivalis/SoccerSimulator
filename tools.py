@@ -186,6 +186,21 @@ class MyState(object):
 				pp = p
 		return pp
 	
+	def adv_danger_but(self):
+		players = self.adv_players
+		pp = players[0]
+		for p in players:
+			x_pp = self.state.player_state(pp[0], pp[1]).position.x
+			x_p = self.state.player_state(p[0], p[1]).position.x
+			if x_p < x_pp :
+				pp = p
+		if self.sens == 1 :
+			return pp
+		elif pp == players[0] :
+			return players[1]
+		else : 
+			return players[0] 
+	
 	def pos_j(self, p):
 		return self.state.player_state(p[0], p[1]).position
 		
