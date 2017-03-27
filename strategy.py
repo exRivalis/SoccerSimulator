@@ -506,8 +506,11 @@ class Dribbleur(Strategy):
 		sens = ms.sens
 		
 		#recup advs devant moi
-		advs = [p for p in ms.adv_players if mstate.state.player_state(p[0], p[1]).position.x*sens > ms.my_position.x*sens]
+		advs = [p for p in ms.adv_players if ms.state.player_state(p[0], p[1]).position.x*sens > ms.my_position.x*sens]
 		
+		#s'il n'y a personne devant
+		if len(advs) == 0:
+			return ms.shoot(ms.but_adv)
 		#je recup le plus proche d'ntre eux
 		p = advs[0]
 		for i in advs:
@@ -517,10 +520,13 @@ class Dribbleur(Strategy):
 		#s'il y a quelqu'un sur mon chemin a droite je vais a gauche et inversement
 		dy = (ms.my_position.y - ms.state.player_state(p[0], p[1]).position.y)
 		ball = ms.ball_position
+		if ms.can_shoot == False:
+			return ms.shoot(ms.my_position + Vector2D(10, dy))
 		if abs(dy) < 10:#aller en haut ou en bas
-			return SoccerAction(ms.my_position + Vector2D(10, dy), Vector2D) + SoccerAction(Vector2D, ball)
+			return ms.shoot(ms.but_adv)
+			#SoccerAction(ms.my_position + Vector2D(10, dy), Vector2D()) + SoccerAction(Vector2D(), ball)
 		#aller droit vers les buts
-		return ms.aller_but_adv
+		return ms.shoot(ms.but_adv)
 		
 #changement de strategies avec le clavier
 

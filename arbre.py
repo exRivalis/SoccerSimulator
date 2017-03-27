@@ -8,7 +8,7 @@ from sklearn.tree import DecisionTreeClassifier
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien, Shooter, Defense, GardienB, Passeur
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien, Shooter, Defense, GardienB, Passeur, Dribbleur
 
 from tools import MyState
 
@@ -38,6 +38,7 @@ strat_j1.add('p',Passeur())
 strat_j1.add('d', Defenseur())
 strat_j1.add('g', GardienB())
 strat_j1.add('s', Shooter())
+strat_j1.add('a', Dribbleur())
 
 team1.add("Jexp 1",strat_j1)
 team1.add("Jexp 2",StaticStrategy())

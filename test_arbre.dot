@@ -1,9 +1,9 @@
 digraph Tree {
 node [shape=box, style="filled, rounded", color="black", fontname=helvetica] ;
 edge [fontname=helvetica] ;
-0 [label="X[1] <= 0.5\ngini = 0.6228\nsamples = 17\nvalue = [8, 6, 3]\nclass = GardienB", fillcolor="#e581392e"] ;
-1 [label="gini = 0.4298\nsamples = 11\nvalue = [8, 2, 1]\nclass = GardienB", fillcolor="#e58139aa"] ;
+0 [label="X[1] <= 0.5\ngini = 0.64\nsamples = 5\nvalue = [1, 2, 2]\nclass = defenseur", fillcolor="#39e58100"] ;
+1 [label="gini = 0.4444\nsamples = 3\nvalue = [1, 2, 0]\nclass = defenseur", fillcolor="#39e5817f"] ;
 0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
-2 [label="gini = 0.4444\nsamples = 6\nvalue = [0, 4, 2]\nclass = defenseur", fillcolor="#39e5817f"] ;
+2 [label="gini = 0.0\nsamples = 2\nvalue = [0, 0, 2]\nclass = dribbleur", fillcolor="#8139e5ff"] ;
 0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
 }
