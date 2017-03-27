@@ -129,7 +129,7 @@ class Defense(Strategy):
 		adv = mstate.state.player_state(mstate.adv_nearby()[0], mstate.adv_nearby()[1]).position
 		adv_speed = mstate.state.player_state(mstate.adv_nearby()[0], mstate.adv_nearby()[1]).vitesse
 		pos_init = Vector2D(adv.x- (10 * mstate.sens), 45)
-		y_move = (((adv.y-45) * abs(adv.x - 10*mstate.sens)) / abs(adv.x-but.x)) + adv_speed*5 if abs(adv.x-but.x) > 3 else 0
+		y_move = (((adv.y + adv_speed.y*5-45) * abs(adv.x + adv_speed.x*5 - 10*mstate.sens)) / abs(adv.x + adv_speed.x*5-but.x)) if abs(adv.x + adv_speed.x*5-but.x) > 3 else 0
 				
 		pos_base = pos_init + Vector2D(0, y_move)
 		"""if me_ball < adv_ball:
