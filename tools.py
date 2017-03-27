@@ -198,6 +198,17 @@ class MyState(object):
 		return pp
 		
 	
+	def co_danger_but(self):
+		players = self.co_players
+		pp = players[0]
+		for p in players:
+			x_pp = self.state.player_state(pp[0], pp[1]).position.x
+			x_p = self.state.player_state(p[0], p[1]).position.x
+			if (x_p < x_pp and self.sens == -1) or (x_p > x_pp and self.sens == 1) :
+				pp = p
+		return pp
+		
+	
 	def co_pball(self):
 		players = self.co_players
 		pp = (self.key[0], self.key[1])
