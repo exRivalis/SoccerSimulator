@@ -497,6 +497,30 @@ class StratARien(Strategy):
 		
 		return SoccerAction(Vector2D(0,0), Vector2D())
 
-
+#dribleur
+class Dribbleur(Strategy):
+	def __init__(self, name = "dribbleur"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		ms = MyState(state, idteam, idplayer)
+		sens = ms.sens
+		
+		#recup advs devant moi
+		advs = [p for p in ms.adv_players if mstate.state.player_state(p[0], p[1]).position.x*sens > ms.my_position.x*sens]
+		
+		#je recup le plus proche d'ntre eux
+		p = advs[0]
+		for i in advs:
+			if ms.my_position.distance(ms.state.player_state(i[0], i[1]).position) < ms.my_position.distance(ms.state.player_state(p[0], p[1]).position):
+				p = i
+				
+		#s'il y a quelqu'un sur mon chemin a droite je vais a gauche et inversement
+		dy = (ms.my_position.y - ms.state.player_state(p[0], p[1]).position.y)
+		ball = ms.ball_position
+		if abs(dy) < 10:#aller en haut ou en bas
+			return SoccerAction(ms.my_position + Vector2D(10, dy), Vector2D) + SoccerAction(Vector2D, ball)
+		#aller droit vers les buts
+		return ms.aller_but_adv
+		
 #changement de strategies avec le clavier
 
