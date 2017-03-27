@@ -88,13 +88,14 @@ class MyState(object):
 	
 	@property
 	def predict_ball(self):
-		norm_base = self.v_ball.norm 
-		norm_fin = (norm_base-(5 * settings.ballBrakeConstant)) * (1 - (2 * settings.ballBrakeSquare)) - (settings.ballBrakeConstant * norm_base)
+		norm_base = self.v_ball.norm
+		norm_tour = self.v_ball.norm - settings.ballBrakeSquare * self.v_ball.norm ** 2 - settings.ballBrakeConstant * self.v_ball.norm 
+		norm_fin = norm_base *2 - norm_tour
+		for i in range (0, 3):
+			norm_base = norm_fin
+			norm_tour = norm_tour - settings.ballBrakeSquare * norm_tour ** 2 - settings.ballBrakeConstant * norm_tour 
+			norm_fin = norm_base *2 - norm_tour
 		ball_pos_fin = self.ball_position + (self.v_ball.normalize() * norm_fin)
-		for i in range (0, 15):
-			norm_base = self.v_ball.norm 
-			norm_fin = (norm_base-(5 * settings.ballBrakeConstant)) * (1 - (2 * settings.ballBrakeSquare)) - (settings.ballBrakeConstant * norm_base)
-			ball_pos_fin = self.ball_position + (self.v_ball.normalize() * norm_fin)
 		
 		#print ball_pos_fin
 		return ball_pos_fin
@@ -192,14 +193,30 @@ class MyState(object):
 		for p in players:
 			x_pp = self.state.player_state(pp[0], pp[1]).position.x
 			x_p = self.state.player_state(p[0], p[1]).position.x
-			if x_p < x_pp :
+			if (x_p < x_pp and self.sens == 1) or (x_p > x_pp and self.sens == -1) :
 				pp = p
-		if self.sens == 1 :
-			return pp
-		elif pp == players[0] :
-			return players[1]
-		else : 
-			return players[0] 
+		return pp
+		
+	
+	def co_pball(self):
+		players = self.co_players
+		pp = (self.key[0], self.key[1])
+		for p in players:
+			dist_pp_ball = self.state.player_state(pp[0], pp[1]).position.distance(self.ball_position)
+			dist_p_ball = self.state.player_state(p[0], p[1]).position.distance(self.ball_position)
+			if (dist_pp_ball > dist_p_ball) :
+				pp = p
+		return pp
+	
+	def adv_pball(self):
+		players = self.adv_players
+		pp = players[0]
+		for p in players:
+			dist_pp_ball = self.state.player_state(pp[0], pp[1]).position.distance(self.ball_position)
+			dist_p_ball = self.state.player_state(p[0], p[1]).position.distance(self.ball_position)
+			if (dist_pp_ball > dist_p_ball) :
+				pp = p
+		return pp 
 	
 	def pos_j(self, p):
 		return self.state.player_state(p[0], p[1]).position

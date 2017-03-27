@@ -8,7 +8,10 @@ from sklearn.tree import DecisionTreeClassifier
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien, Shooter, Defense
+
+from tools import MyState
+
 
 import os.path
 ## Strategie aleatoire
@@ -34,6 +37,7 @@ strat_j1 = KeyboardStrategy()
 strat_j1.add('a',Attaquant())
 strat_j1.add('z',StaticStrategy())
 strat_j1.add('g', Gardien())
+strat_j1.add('s', Shooter())
 
 team1.add("Jexp 1",strat_j1)
 team1.add("Jexp 2",StaticStrategy())
@@ -42,6 +46,7 @@ strat_j2 = KeyboardStrategy()
 strat_j2.add('e',Attaquant())
 strat_j2.add('r',StaticStrategy())
 strat_j2.add('h', Gardien())
+strat_j2.add('d', Defense())
 team2.add("rien 1", strat_j2)
 team2.add("rien 2", StaticStrategy())
 
@@ -49,15 +54,26 @@ team2.add("rien 2", StaticStrategy())
 ### Transformation d'un etat en features : state,idt,idp -> R^d
 def my_get_features(state,idt,idp):
     """ extraction du vecteur de features d'un etat, ici distance a la balle, distance au but, distance balle but """
-    p_pos= state.player_state(idt,idp).position
-    f1 = p_pos.distance(state.ball.position) #ma distance de la balle
-    f2= p_pos.distance( Vector2D((2-idt)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.))#dist but
+    mstate = MyState(state,idt,idp)
+    p_pos = mstate.my_position
+    f1 = p_pos.distance(state.ball.position + mstate.v_ball*10) #ma distance de la balle
+    f2 = p_pos.distance( Vector2D((2-idt)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.))#dist but
+    adv = mstate.adv_nearby()
+    adv_pos = state.player_state(adv[0], adv[1]).position
+    adv_ball = adv_pos.distance(mstate.ball_position + mstate.v_ball*10)
     f3 = state.ball.position.distance(Vector2D((2-idt)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.))#dist but ball
-    return [f1,f2,f3]
+    ballmine = f1<adv_ball
+    camp_attaque = (mstate.sens == 1 and mstate.ball_position.x > 75) or (mstate.sens == -1 and mstate.ball_position.x < 75)
+    adv = mstate.adv_pball()
+    co = mstate.co_pball()
+    our_ball = state.player_state(co[0], co[1]).position.distance(mstate.ball_position) < state.player_state(adv[0], adv[1]).position.distance(mstate.ball_position)
+    
+    #on aura besoin si la balle est dans mon camp, alor si je suis le plus proche alor si j'y suis deja je fait un truck 
+    return [camp_attaque, our_ball, ballmine]
 
 
 def entrainement(fn):
-    simu = Simulation(team1,team2)
+    simu = Simulation(team1,team2,3000)
     show_simu(simu)
     # recuperation de tous les etats
     training_states = strat_j1.states
@@ -85,7 +101,7 @@ def jouer_arbre(dt):
     team3 = SoccerTeam("Arbre Team")
     team3.add("Joueur 1",treeStrat1)
     team3.add("Joueur 2",treeStrat2)
-    simu = Simulation(team2,team1)
+    simu = Simulation(team2,team1,300)
     show_simu(simu)
 
 if __name__=="__main__":
