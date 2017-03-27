@@ -8,7 +8,7 @@ from sklearn.tree import DecisionTreeClassifier
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien, Shooter, Defense
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien, Shooter, Defense, GardienB, Passeur
 
 from tools import MyState
 
@@ -34,9 +34,9 @@ class StaticStrategy(Strategy):
 
 team1 = SoccerTeam("team1")
 strat_j1 = KeyboardStrategy()
-strat_j1.add('a',Attaquant())
+strat_j1.add('p',Passeur())
 strat_j1.add('z',StaticStrategy())
-strat_j1.add('g', Gardien())
+strat_j1.add('g', GardienB())
 strat_j1.add('s', Shooter())
 
 team1.add("Jexp 1",strat_j1)

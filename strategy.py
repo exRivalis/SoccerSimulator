@@ -37,7 +37,7 @@ class Passeur(Strategy):
 		mstate = MyState(state,idteam,idplayer)
 		co = mstate.co_danger_but()
 		co_pos = mstate.state.player_state(co[0], co[1]).position
-		co_dist = co_pos.distance(self.my_position)
+		co_dist = co_pos.distance(mstate.my_position)
 		if co_dist < 65 :
 			return mstate.shoot(co_pos)
 		else :
@@ -59,8 +59,8 @@ class GardienB(Strategy):
 		y_move = ((ball.y-45) * 15)/abs(ball.x - but.x) if abs(ball.x-but.x)>3 else 0
 		pos_init = Vector2D(10, 45) if idteam == 1 else Vector2D(140, 45)
 		pos_base = pos_init + Vector2D(0, y_move) 
-		cote_attaque = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
-		cote_defense = (sens == 1 and ball.x > 75) or (sens == -1 and ball.x < 75)
+		cote_attaque = (mstate.sens == 1 and ball.x > 75) or (mstate.sens == -1 and ball.x < 75)
+		cote_defense = (mstate.sens == 1 and ball.x > 75) or (mstate.sens == -1 and ball.x < 75)
 		adv_dist = me.distance(adv)
 		si_sort = True if (me.distance(ball) < (adv.distance(ball)+2*mstate.v_ball.norm) and ball.distance(but)<75) else False
 		si_avance = True if (me.distance(ball) < 2 * adv.distance(ball) and ball.distance(but)<35) else False
@@ -84,7 +84,7 @@ class GardienB(Strategy):
 		co_ball = co_pos.distance(mstate.ball_position+mstate.v_ball*10)
 		adv = mstate.adv_danger_but()
 		pos_adv = mstate.state.player_state(adv[0], adv[1]).position
-		pos_contre = pos_adv + Vector2D(-11,0) if sens == 1 else pos_adv + Vector2D(11, 0)
+		pos_contre = pos_adv + Vector2D(-11,0) if mstate.sens == 1 else pos_adv + Vector2D(11, 0)
 		adv_ball = pos_adv.distance(mstate.ball_position+mstate.v_ball*10)
 		
 		"""if co_ball < adv_ball and ball.distance(but) > 65:
