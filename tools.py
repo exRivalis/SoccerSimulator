@@ -29,7 +29,7 @@ class MyState(object):
 		self.adv_players = [p  for p in self.all_players if p[0] != self.key[0]]
 		
 		#can the player shoot in the ball
-		self.can_shoot = True if self.my_position.distance(self.ball_position) < 0.82 else False
+		self.can_shoot = True if self.my_position.distance(self.ball_position) <= (settings.PLAYER_RADIUS + settings.BALL_RADIUS) else False
 		#nouvelles motif pour simplifier
 		self.sens = 1 if self.key[0] == 1 else -1
 		
@@ -79,14 +79,26 @@ class MyState(object):
 		dist = self.dist_ball
 		k = (v_ball*3+(self.ball_position - self.my_position))
 		joue = SoccerAction(k, Vector2D())
-		if self.dist_ball > 10:
+		if self.dist_ball > 11:
 			return joue
-		elif self.dist_ball > 3:
+		elif self.dist_ball > 4:
 			return SoccerAction((self.ball_position - self.my_position)/2, Vector2D())
 		else :
 			return SoccerAction((self.ball_position - self.my_position).normalize(), Vector2D())
 	
-	
+	@property
+	def predict_ball(self):
+		norm_base = self.v_ball.norm
+		norm_tour = self.v_ball.norm - settings.ballBrakeSquare * self.v_ball.norm ** 2 - settings.ballBrakeConstant * self.v_ball.norm 
+		norm_fin = norm_base *2 - norm_tour
+		for i in range (0, 3):
+			norm_base = norm_fin
+			norm_tour = norm_tour - settings.ballBrakeSquare * norm_tour ** 2 - settings.ballBrakeConstant * norm_tour 
+			norm_fin = norm_base *2 - norm_tour
+		ball_pos_fin = self.ball_position + (self.v_ball.normalize() * norm_fin)
+		
+		#print ball_pos_fin
+		return ball_pos_fin
 	"""def aller(self, p) :
 		dist = p.distance(self.my_position)
 		v_ball = self.v_ball
@@ -105,20 +117,24 @@ class MyState(object):
 		if dist < 10:
 			k = ((dist/4)%20)
 			return SoccerAction(k*vec_dest, Vector2D())
-		k = ((math.exp(dist-10))%20)
+		k = (dist)
 		return SoccerAction(k*vec_dest, Vector2D())
 	
 	def shoot(self, p) :
 		k = p.distance(self.my_position)/300
-		if self.can_shoot :
+		"""if self.can_shoot :
 			if (self.sens == 1 and self.my_position.x > 140) or (self.sens == -1 and self.my_position.x < 10) : 	
 				if self.my_position.y > 70 or self.my_position.y < 20 :
 					return self.drible()
 					#return self.rebond #voir la variable step, et rajouter une variable dans le state a 5 par exp et je decremente a chaque tour
-				return self.tire(p-self.my_position)
+				return self.tire(p-self.my_position)"""
 			#	return SoccerAction(Vector2D(),(p-self.my_position)/2)
 	#sinon dans tout les autres cas
 		if self.can_shoot :
+			
+			#print self.ball_position
+			#i = self.predict_ball
+			#print i
 			if self.my_position.distance(p) < 20 :
 				return self.tire((p-self.my_position)*2)
 			return self.tire(k*(p-self.my_position))  
@@ -170,6 +186,48 @@ class MyState(object):
 			if dist_p < dist_pp :
 				pp = p
 		return pp
+	
+	def adv_danger_but(self):
+		players = self.adv_players
+		pp = players[0]
+		for p in players:
+			x_pp = self.state.player_state(pp[0], pp[1]).position.x
+			x_p = self.state.player_state(p[0], p[1]).position.x
+			if (x_p < x_pp and self.sens == 1) or (x_p > x_pp and self.sens == -1) :
+				pp = p
+		return pp
+		
+	
+	def co_danger_but(self):
+		players = self.co_players
+		pp = players[0]
+		for p in players:
+			x_pp = self.state.player_state(pp[0], pp[1]).position.x
+			x_p = self.state.player_state(p[0], p[1]).position.x
+			if (x_p < x_pp and self.sens == -1) or (x_p > x_pp and self.sens == 1) :
+				pp = p
+		return pp
+		
+	
+	def co_pball(self):
+		players = self.co_players
+		pp = (self.key[0], self.key[1])
+		for p in players:
+			dist_pp_ball = self.state.player_state(pp[0], pp[1]).position.distance(self.ball_position)
+			dist_p_ball = self.state.player_state(p[0], p[1]).position.distance(self.ball_position)
+			if (dist_pp_ball > dist_p_ball) :
+				pp = p
+		return pp
+	
+	def adv_pball(self):
+		players = self.adv_players
+		pp = players[0]
+		for p in players:
+			dist_pp_ball = self.state.player_state(pp[0], pp[1]).position.distance(self.ball_position)
+			dist_p_ball = self.state.player_state(p[0], p[1]).position.distance(self.ball_position)
+			if (dist_pp_ball > dist_p_ball) :
+				pp = p
+		return pp 
 	
 	def pos_j(self, p):
 		return self.state.player_state(p[0], p[1]).position

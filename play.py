@@ -25,7 +25,7 @@ from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, Defens
 joueur1 = Player("player1", Attaquant())
 joueur2 = Player("player2", Attaquant())
 
-joueur3 = Player("player3", Attaquant())
+joueur3 = Player("player3", Defenseur())
 joueur4 = Player("player4", Gardien())
 
 

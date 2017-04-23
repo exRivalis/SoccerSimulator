@@ -1,4 +1,4 @@
-from strategy import Tireur, Solo
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien
 #les objets de base
 from soccersimulator import Vector2D, SoccerState, SoccerAction
 
@@ -17,7 +17,8 @@ from tactic import TTactic, FTactic, STactic
 import math
 
 from tools import MyState
-
+import logging
+logging.basicConfig(level = logging.DEBUG)
 #for k in range(0, 50):# k allant de 0 a 50 par pas de 1
 #	for i in range(0, 1000): #pour 1000 tirs
 		#								(idteam, idplayer) : player, ball = Ball(pos, vit)
@@ -28,13 +29,17 @@ vB	= Vector2D(0, 0)
 state = SoccerState(states = {(1, 0) : PlayerState(posP, Vector2D(0, 0)), (2, 0) : PlayerState(posP, Vector2D(0, 0))}, ball = Ball(posB, vB))
 """
 
-p1 = Player("Houta", Solo())
-p2 = Player("Hmar", Solo())
+p1 = Player("Houta", Attaquant())
+p2 = Player("Hmar", Gardien())
 
-team1 = SoccerTeam("equipe1", [p1])
-team2 = SoccerTeam("equipe2", [p2])
+p3 = Player("vvvv", Attaquant())
+p4 = Player("wwww", Gardien())
+
+team1 = SoccerTeam("Bill", [p1, p2])
+team2 = SoccerTeam("Boule", [p3, p4])
 
 match = Simulation(team1, team2, 2000)
+
 
 show_simu(match)
 		
