@@ -63,6 +63,10 @@ def my_get_features(state,idt,idp):
     adv_pos = state.player_state(adv[0], adv[1]).position
     adv_ball = adv_pos.distance(mstate.ball_position + mstate.v_ball*10)
     f3 = state.ball.position.distance(Vector2D((2-idt)*settings.GAME_WIDTH,settings.GAME_HEIGHT/2.))#dist but ball
+    coeq = mstate.coeq_nearby()
+    f4 = mstate.state.player_state(coeq[0], coeq[1]).position.distance(state.ball.position + mstate.v_ball*10) #dist coeq
+    f5 = mstate.state.player_state(coeq[0], coeq[1]).position.distance(mstate.but_adv) #dist coeq but
+    f6 = 1 #dist coeq adv_danger
     ballmine = f1<adv_ball
     camp_attaque = (mstate.sens == 1 and mstate.ball_position.x > 75) or (mstate.sens == -1 and mstate.ball_position.x < 75)
     adv = mstate.adv_pball()
