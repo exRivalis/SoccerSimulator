@@ -180,12 +180,12 @@ class Defense1(Strategy):
 		"""if me_ball < adv_ball:
 			return mstate.shoot(co_pos)
 		elif adv.x < 11 and mstate.sens == 1 or :"""
-		if mstate.ball_mine:
+		if mstate.closest_ball: #si je suis le plus proche de tous de la balle
 			if me_but < 50:
 				return mstate.shoot(mstate.but_adv)
 			if me_but_mine < 43: #ma distance a mes buts
-				return mstate.degager()
-			if mstate.champ_libre:
+				return mstate.degager
+			if mstate.champs_libre:
 				return mstate.go_but()
 			return mstate.passe(co_pos)
 		if mstate.our_ball:
@@ -439,7 +439,6 @@ class Gardien(Strategy):
 		adv_dist = me.distance(adv)
 		si_sort = True if (me.distance(ball) < (adv.distance(ball)+2*mstate.v_ball.norm) and ball.distance(but)<75) else False
 		si_avance = True if (me.distance(ball) < 2 * adv.distance(ball) and ball.distance(but)<35) else False
-		degager = mstate.shoot(but_adv)
 		#l'adversaire plus proches aux buts que le gardien
 		adv_but = [p for p in mstate.adv_players if (mstate.state.player_state(p[0],p[1]).position.distance(but) < me.distance(ball))]
 		#s'il y a un adversaire plus proche des buts que moi
@@ -453,7 +452,7 @@ class Gardien(Strategy):
 		
 		passer = mstate.shoot(pos_coeq_libre)
 	
-		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != [0, 0] else degager
+		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != [0, 0] else mstate.degager
 		
 		me_ball = me.distance(ball+mstate.v_ball*10)
 		co_ball = co_pos.distance(mstate.ball_position+mstate.v_ball*10)
