@@ -76,6 +76,9 @@ class MyState(object):
 				return False
 		return True
 	
+	@property
+	def have_ball(self)
+		return self.my_position.distance(self.ball_position) < 5
 	 
 	@property
 	def coeq_libre(self) :
