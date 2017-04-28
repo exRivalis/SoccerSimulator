@@ -182,7 +182,12 @@ class MyState(object):
 		coeqs = self.co_players
 		p = self.state.player_state(coeqs[0][0], coeqs[0][1]).position
 		for pp in coeqs:
-			if self.state.player_state(coeqs[0][0], coeqs[0][1]).position
+			dist_c = self.state.player_state(pp[0], pp[1]).position.distance(self.but_adv)
+			dist_me = self.my_position.distance(self.but_adv)
+			if dist_c < dist_me:
+				p =  self.state.player_state(pp[0], pp[1]).position
+				
+				
 	@property
 	def degager(self):
 		j = self.my_position
