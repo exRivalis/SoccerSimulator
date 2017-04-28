@@ -78,7 +78,7 @@ class MyState(object):
 	
 	@property
 	def have_ball(self)
-		return self.my_position.distance(self.ball_position) < 5
+		return self.my_position.distance(self.ball_position) < 1
 	 
 	@property
 	def coeq_libre(self) :
@@ -177,6 +177,12 @@ class MyState(object):
 			#attendre 5 tours
 			return self.aller_ball
 	
+	@property
+	def plus_proche_but(self):
+		coeqs = self.co_players
+		p = self.state.player_state(coeqs[0][0], coeqs[0][1]).position
+		for pp in coeqs:
+			if self.state.player_state(coeqs[0][0], coeqs[0][1]).position
 	@property
 	def degager(self):
 		j = self.my_position

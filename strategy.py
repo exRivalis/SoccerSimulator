@@ -177,7 +177,7 @@ class Defense1(Strategy):
 		pos_init = Vector2D(adv.x- (10 * mstate.sens), 45)
 		y_move = (((adv_near.y -45) * abs(adv_near.x - 10*mstate.sens)) / abs(adv_near.x -but.x)) if abs(adv_near.x -but.x) > 3 else 0
 		me_but_mine = mstate.my_position.distance(mstate.but)
-		pos_def_off = pos_init + Vector2D(0, y_move)
+		
 		"""if me_ball < adv_ball:
 			return mstate.shoot(co_pos)
 		elif adv.x < 11 and mstate.sens == 1 or :"""
@@ -188,6 +188,9 @@ class Defense1(Strategy):
 		pos_att = (((att1_pos+att2_pos)/2) + Vector2D(-10,0)) if sens ==1 else (((att1_pos+att2_pos)/2) + Vector2D(10,0))
 		adv_2 = mstate.adv_danger2_but()
 		pos_def = mstate.state.player_state(adv_2[0], adv_2[1]).position + Vector2D(-10, 0) if sens ==1 else mstate.state.player_state(adv_2[0], adv_2[1]).position + Vector2D(10, 0)
+		diff = att2_pos - adv_near
+		move = diff/10
+		pos_def_off = mstate.my_position + move
 		if mstate.closest_ball: #si je suis le plus proche de tous de la balle
 			if me_but < 50:
 				return mstate.shoot(mstate.but_adv)
@@ -216,6 +219,13 @@ class Attaqtaq(Strategy):
 		sens = ms.sens
 		coeq = ms.coeq_nearby()
 		
+		if ms.have_ball:
+			if ms.adv_nearby.x*sens < ms.my_position.x*sens:#adv le plus proche derrier: foncer but
+				return ms.go_but
+			#sinon si je suis le plus proche des buts je fonce
+			if 
+			
+		return ms.aller_ball
 #creation strategy
 class Attaquant(Strategy):
 	
