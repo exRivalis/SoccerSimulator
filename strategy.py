@@ -164,7 +164,7 @@ class Defense1(Strategy):
 		co_pos = mstate.state.player_state(co[0], co[1]).position
 		me_ball = mstate.my_position.distance(mstate.ball_position+mstate.v_ball*10)
 		co_ball = co_pos.distance(mstate.ball_position+mstate.v_ball*10)
-		adv_danger2 = mstate.adv_danger2_but() /////////////////////////////////////
+		adv_danger2 = mstate.adv_danger2_but() 
 		pos_adv_danger2 = mstate.state.player_state(adv_danger2[0], adv_danger2[1]).position
 		pos_contre = pos_adv + Vector2D(-11,0) if mstate.sens == 1 else pos_adv + Vector2D(11, 0)
 		adv_ball = pos_adv_danger2.distance(mstate.ball_position+mstate.v_ball*10)
@@ -198,7 +198,7 @@ class Defense1(Strategy):
 			return mstate.passe(co_pos)
 		if mstate.our_ball:
 			return mstate.aller(pos_att)
-		if me_ball < ball_adv_near or (mstate.plus_proche && me_but_mine < 85): #notion d'aversaire surveillé?
+		if me_ball < ball_adv_near or (mstate.plus_proche and me_but_mine < 85):
 			return mstate.aller(pos_def_off)
 		return mstate.aller(pos_def)
 		
@@ -206,12 +206,16 @@ class Defense1(Strategy):
 		
 #4vs4:
 #attaquant2:
-class Attaquant2(Strategy):
+class Attaqtaq(Strategy):
 	def __init__(self, name="attaquant2"):
 		Strategy.__init__(self, name)
 	def compute_strategy(self, state, idteam, idplayer):
-		mstate = 
-
+		ms = MyState(state, idteam, idplayer)
+		
+		adv = ms.adv_nearby()
+		sens = ms.sens
+		coeq = ms.coeq_nearby()
+		
 #creation strategy
 class Attaquant(Strategy):
 	

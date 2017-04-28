@@ -61,7 +61,7 @@ class MyState(object):
 		self.coeq_proche = [p for p in self.co_players if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < 75]
 		
 		#si la balle a nous
-		self.our_ball = True if state.player_state(self.co_pball()[0], self.co_pball()[1]).position.distance(mstate.ball_position) < state.player_state(self..adv_pball()[0], self..adv_pball()[1]).position.distance(mstate.ball_position) else False
+		self.our_ball = True if state.player_state(self.co_pball()[0], self.co_pball()[1]).position.distance(self.ball_position) < state.player_state(self.adv_pball()[0], self.adv_pball()[1]).position.distance(self.ball_position) else False
 		
 		#si je suis le plus proche de mes coequipiers a la balle
 		self.plus_proche = True if self.co_pball() == (self.key[0], self.key[1]) else False
