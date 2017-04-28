@@ -16,7 +16,7 @@ import math
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien, Defense1
 
 
 
@@ -28,6 +28,10 @@ joueur2 = Player("player2", Attaquant())
 joueur3 = Player("player3", Defenseur())
 joueur4 = Player("player4", Gardien())
 
+j5 = Player("def1", Defense1())
+j6 = Player("def1_2", Defense1())
+j4 = Player("", )
+j4 = Player("j4", )
 
 team1 = SoccerTeam("Eq1", [joueur1, joueur2])
 team2 = SoccerTeam("Eq2", [joueur3, joueur4])
