@@ -77,7 +77,7 @@ class MyState(object):
 		return True
 	
 	@property
-	def have_ball(self)
+	def have_ball(self):
 		return self.my_position.distance(self.ball_position) < 1
 	 
 	@property
@@ -87,10 +87,17 @@ class MyState(object):
 		elif len(self.coeq_proche) == 1 :
 			return self.coeq_proche[0]
 		else :
-			x = self.player_state(p[0], p[1]).position.distance(self.adv_nearby_v2(self.player_state(p[0], p[1]).position))
-			pp = coeq_proche[0]
-			for p in coeq_proche[1:] :
-				d = self.player_state(p[0], p[1]).position.distance(self.adv_nearby_v2(self.player_state(p[0], p[1]).position))
+			p = self.coeq_proche[0]
+			d = self.adv_nearby_v2(self.state.player_state(p[0], p[1]).position) #position de p
+
+			x = self.state.player_state(p[0], p[1]).position.distance(self.state.player_state(d[0], d[1]).position)
+			pp = self.coeq_proche[0]
+			for p in self.coeq_proche[1:] :
+				#position de l'adv le plus proche de du coeq le plus proche
+				a = self.adv_nearby_v2(self.state.player_state(p[0], p[1]).position)
+				ap = self.state.player_state(a[0], a[1]).position
+				
+				d = self.state.player_state(p[0], p[1]).position.distance(ap)
 				if x < d :
 					x = d
 					pp = p
@@ -177,6 +184,7 @@ class MyState(object):
 			#attendre 5 tours
 			return self.aller_ball
 	
+	#retourne vrai si je usis le plus roche des buts et false sinon
 	@property
 	def plus_proche_but(self):
 		coeqs = self.co_players
@@ -185,7 +193,8 @@ class MyState(object):
 			dist_c = self.state.player_state(pp[0], pp[1]).position.distance(self.but_adv)
 			dist_me = self.my_position.distance(self.but_adv)
 			if dist_c < dist_me:
-				p =  self.state.player_state(pp[0], pp[1]).position
+				return False
+		return True
 				
 				
 	@property
@@ -198,7 +207,7 @@ class MyState(object):
 			if dist_p < dist_j:
 				j = p
 				dist_j = dist_p
-		return self.shoot(j)
+		return self.shoot(self.state.player_state(j[0], j[1]).position)
 			
 	@property
 	def go_but(self):
@@ -260,7 +269,7 @@ class MyState(object):
 			dist_p = co_pos.distance(ps_p.position)
 			if dist_p < dist_pp :
 				pp = p
-		return pp
+		return pp#self.state.player_state(pp[0], pp[1])
 	
 	def adv_danger_but(self):
 		players = self.adv_players

@@ -220,11 +220,19 @@ class Attaqtaq(Strategy):
 		coeq = ms.coeq_nearby()
 		
 		if ms.have_ball:
-			if ms.adv_nearby.x*sens < ms.my_position.x*sens:#adv le plus proche derrier: foncer but
+			if ms.state.player_state(adv[0], adv[1]).position.x*sens < ms.my_position.x*sens:#adv le plus proche derrier: foncer but
 				return ms.go_but
 			#sinon si je suis le plus proche des buts je fonce
-			if 
-			
+			if ms.plus_proche_but:
+				return ms.go_but
+		#si j'ai pas la balle et aucun de mes coeq n'a la balle je fonce vers la balle 
+		co_pball = ms.co_pball()
+		#si je nesuis pas le plus prochede la balle je monte en attaque
+		#si la balle est dans mon camp je descend sinon je vais en attaque
+		if ms.ball_position.x*sens < 45:
+			return ms.aller_ball
+		elif ms.state.player_state(co_pball[0], co_pball[1]).position != ms.my_position:
+			return ms.aller(ms.but_adv - sens*Vector2D(-10, -5))
 		return ms.aller_ball
 #creation strategy
 class Attaquant(Strategy):
