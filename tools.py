@@ -46,7 +46,9 @@ class MyState(object):
 		#distance de la balle
 		self.dist_ball = self.my_position.distance(self.ball_position)
 		
+		self.dist_but_adv = self.my_position.distance(self.but_adv)
 		
+		self.dist_but_mine = self.my_position.distance(self.but)
 		
 		#mon vecteur vitesse
 		self.my_v = self.state.player_state(self.key[0], self.key[1]).vitesse
@@ -54,9 +56,30 @@ class MyState(object):
 		#est proche de la balle
 		self.near_ball = True if self.my_position.distance(self.ball_position) < 20 else False
 		
+		
 		#liste des coeq proche
 		self.coeq_proche = [p for p in self.co_players if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < 75]
 		
+		#si la balle a nous
+		self.our_ball = True if state.player_state(self.co_pball()[0], self.co_pball()[1]).position.distance(self.ball_position) < state.player_state(self.adv_pball()[0], self.adv_pball()[1]).position.distance(self.ball_position) else False
+		
+		#si je suis le plus proche de mes coequipiers a la balle
+		self.plus_proche = True if self.co_pball() == (self.key[0], self.key[1]) else False
+	
+	@property
+	def closest_ball(self):
+		me_ball = self.dist_ball
+		for p in self.all_players:
+			pos_p = self.state.player_state(p[0], p[1]).position
+			dist_p_ball = self.ball_position.distance(pos_p)
+			if me_ball > dist_p_ball :
+				return False
+		return True
+	
+	@property
+	def have_ball(self):
+		return self.my_position.distance(self.ball_position) < 1
+	 
 	@property
 	def coeq_libre(self) :
 		if len(self.coeq_proche) == 0 :
@@ -64,14 +87,23 @@ class MyState(object):
 		elif len(self.coeq_proche) == 1 :
 			return self.coeq_proche[0]
 		else :
-			x = mstate.player_state(p[0], p[1]).position.distance(mstate.player_state(p[0], p[1]).adv_nearby())
-			pp = coeq_proche[0]
-			for p in coeq_proche[1:] :
-				d = mstate.player_state(p[0], p[1]).position.distance(mstate.player_state(p[0], p[1]).adv_nearby())
+			p = self.coeq_proche[0]
+			d = self.adv_nearby_v2(self.state.player_state(p[0], p[1]).position) #position de p
+
+			x = self.state.player_state(p[0], p[1]).position.distance(self.state.player_state(d[0], d[1]).position)
+			pp = self.coeq_proche[0]
+			for p in self.coeq_proche[1:] :
+				#position de l'adv le plus proche de du coeq le plus proche
+				a = self.adv_nearby_v2(self.state.player_state(p[0], p[1]).position)
+				ap = self.state.player_state(a[0], a[1]).position
+				
+				d = self.state.player_state(p[0], p[1]).position.distance(ap)
 				if x < d :
 					x = d
 					pp = p
 			return pp
+	
+	
 	@property
 	def aller_ball(self) :
 		#les cas ou je suis proche de la balle et elle va vite?
@@ -86,15 +118,16 @@ class MyState(object):
 		else :
 			return SoccerAction((self.ball_position - self.my_position).normalize(), Vector2D())
 	
+	
 	@property
 	def predict_ball(self):
 		norm_base = self.v_ball.norm
 		norm_tour = self.v_ball.norm - settings.ballBrakeSquare * self.v_ball.norm ** 2 - settings.ballBrakeConstant * self.v_ball.norm 
 		norm_fin = norm_base *2 - norm_tour
-		for i in range (0, 3):
+		"""for i in range (0, 3):
 			norm_base = norm_fin
 			norm_tour = norm_tour - settings.ballBrakeSquare * norm_tour ** 2 - settings.ballBrakeConstant * norm_tour 
-			norm_fin = norm_base *2 - norm_tour
+			norm_fin = norm_base *2 - norm_tour"""
 		ball_pos_fin = self.ball_position + (self.v_ball.normalize() * norm_fin)
 		
 		#print ball_pos_fin
@@ -109,6 +142,14 @@ class MyState(object):
 			return SoccerAction((p-self.my_position) , Vector2D())
 		return SoccerAction((p-self.my_position) , Vector2D())"""
 	
+	def champs_libre(self):
+		adv = self.adv_nearby()
+		adv_pos = self.state.player_state(adv[0], adv[1]).position
+		adv_dist = adv_pos.distance(self.my_position)
+		if adv_dist < 25 and adv_pos.x*self.sens > self.my_position.x*self.sens:
+			return False
+		return True
+	
 	def aller(self, p) :
 		#self.all_players_p
 		dist = p.distance(self.my_position)
@@ -119,6 +160,7 @@ class MyState(object):
 			return SoccerAction(k*vec_dest, Vector2D())
 		k = (dist)
 		return SoccerAction(k*vec_dest, Vector2D())
+	
 	
 	def shoot(self, p) :
 		k = p.distance(self.my_position)/300
@@ -142,6 +184,31 @@ class MyState(object):
 			#attendre 5 tours
 			return self.aller_ball
 	
+	#retourne vrai si je usis le plus roche des buts et false sinon
+	@property
+	def plus_proche_but(self):
+		coeqs = self.co_players
+		p = self.state.player_state(coeqs[0][0], coeqs[0][1]).position
+		for pp in coeqs:
+			dist_c = self.state.player_state(pp[0], pp[1]).position.distance(self.but_adv)
+			dist_me = self.my_position.distance(self.but_adv)
+			if dist_c < dist_me:
+				return False
+		return True
+				
+				
+	@property
+	def degager(self):
+		j = self.my_position
+		dist_j = j.distance(self.but_adv)
+		for p in self.co_players:
+			p_pos = self.state.player_state(p[0], p[1]).position
+			dist_p = p_pos.distance(self.but_adv)
+			if dist_p < dist_j:
+				j = p
+				dist_j = dist_p
+		return self.shoot(self.state.player_state(j[0], j[1]).position)
+			
 	@property
 	def go_but(self):
 		if self.can_shoot:
@@ -151,7 +218,7 @@ class MyState(object):
 	@property
 	def rebond(self): #a ammeliorer encore
 		if self.my_position.y < 30 :
-			return self.tire(self.sens * Vector2D(10, self.but_adv.y-self.my_position.y)) + self.aller(self.my_position + Vector2D(5 * self.sens * -1, 25))
+			return self.tire(self.sens * Vector2D(10, self.but_adv.y-self.my_position.y)) + self.aller(self.my_position + Vector2D(5*self.sens * -1, 25))
 		else:
 			return self.tire(self.but_adv)
 	
@@ -161,14 +228,14 @@ class MyState(object):
 	@property
 	def tirer(self):
 		return SoccerAction(Vector2D(), (self.but_adv - self.my_position))
-			
+	
 	"""
 	@property
 	def attaque_droite(self):
 		if self.state.player_state(self.coeq_nearby[0], self.coeq_nearby[1]).position.distance(self.my_position) > 20:
 			self.aller(self.ball_position) + shoot(self.state.player_state(self.coeq_nearby[0], self.coeq_nearby[1]).position) + 
 		"""
-		
+	
 	#recup adv le plus proche
 	#@property
 	def adv_nearby(self):
@@ -187,6 +254,23 @@ class MyState(object):
 				pp = p
 		return pp
 	
+	#l'adversaire le plus proche de mon coequipier
+	def adv_nearby_v2(self, co_pos):
+		players = self.adv_players
+		"""if len(players) == 1:
+			return None"""
+		pp = players[0]
+		for p in players:
+			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
+			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
+			ps_pp = self.state.player_state(pp[0], pp[1])
+			dist_pp = co_pos.distance(ps_pp.position)
+			ps_p = self.state.player_state(p[0], p[1])
+			dist_p = co_pos.distance(ps_p.position)
+			if dist_p < dist_pp :
+				pp = p
+		return pp#self.state.player_state(pp[0], pp[1])
+	
 	def adv_danger_but(self):
 		players = self.adv_players
 		pp = players[0]
@@ -196,7 +280,24 @@ class MyState(object):
 			if (x_p < x_pp and self.sens == 1) or (x_p > x_pp and self.sens == -1) :
 				pp = p
 		return pp
+	
+	
+	def adv_danger2_but(self):
+		players = self.adv_players
 		
+		pp1 = self.adv_danger_but()
+		if pp1 == players[0] :
+			pp2 = players[1]
+		else :
+			pp2 = players[0]
+		for p in players:
+			#le x du 2eme attaquant
+			x_pp = self.state.player_state(pp2[0], pp2[1]).position.x
+			x_p = self.state.player_state(p[0], p[1]).position.x
+			if (pp1 != pp2 and x_p < x_pp and self.sens == 1) or (pp1 != pp2 and x_p > x_pp and self.sens == -1) :
+				pp2 = p
+		return pp2
+	
 	
 	def co_danger_but(self):
 		players = self.co_players
@@ -207,7 +308,24 @@ class MyState(object):
 			if (x_p < x_pp and self.sens == -1) or (x_p > x_pp and self.sens == 1) :
 				pp = p
 		return pp
+	
+	def co_danger2_but(self):
+		players = self.co_players
 		
+		pp1 = self.co_danger_but()
+		if pp1 == players[0] :
+			pp2 = players[1]
+		else :
+			pp2 = players[0]
+		for p in players:
+			#le x du 2eme attaquant
+			x_pp = self.state.player_state(pp2[0], pp2[1]).position.x
+			x_p = self.state.player_state(p[0], p[1]).position.x
+			if (pp1 != pp2 and x_p < x_pp and self.sens == -1) or (pp1 != pp2 and x_p > x_pp and self.sens == 1) :
+				pp2 = p
+		return pp2
+
+
 	
 	def co_pball(self):
 		players = self.co_players

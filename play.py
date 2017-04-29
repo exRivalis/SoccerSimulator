@@ -16,31 +16,34 @@ import math
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien, Defense1, Attaqtaq, Defense
 
 
 
 #simulation
 
-joueur1 = Player("player1", Attaquant())
-joueur2 = Player("player2", Attaquant())
+j1 = Player("player1", Attaquant())
+j2 = Player("player2", Attaquant())
 
-joueur3 = Player("player3", Defenseur())
-joueur4 = Player("player4", Gardien())
+j3 = Player("player3", Defenseur())
+j4 = Player("player4", Gardien())
 
+j5 = Player("def1", Defense())
+j6 = Player("gard", Gardien())
+j7 = Player("attaqtaq", Attaqtaq())
+j8 = Player("attaq", Attaqtaq())
 
-team1 = SoccerTeam("Eq1", [joueur1, joueur2])
-team2 = SoccerTeam("Eq2", [joueur3, joueur4])
-
+team1 = SoccerTeam("Eq1", [j1, j2])
+team2 = SoccerTeam("Eq2", [j3, j4])
 
 #soloStrategy
 solo1 = Player("Houta", Solo())
 solo2 = Player("Hmar", SoloStrat())
 
-team3 = SoccerTeam("Eq1", [solo2])
-team4 = SoccerTeam("Eq2", [solo1])
+team41 = SoccerTeam("Eq1", [j1, j2, j3, j4])
+team42 = SoccerTeam("Eq2", [j5, j6, j7, j8])
 
-match = Simulation(team1,team2, 2000)
+match = Simulation(team41,team42, 2000)
 #match = Simulation(team3, team4, 2000)
 #print team1.players
 

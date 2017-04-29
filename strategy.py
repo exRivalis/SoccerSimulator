@@ -15,7 +15,7 @@ import math
 
 from tools import MyState
 
-
+ 
 ## Strategie aleatoire
 class RandomStrategy(Strategy):
     def __init__(self):
@@ -149,7 +149,91 @@ class Defense(Strategy):
 			return mstate.aller(ball/4)
 		else :
 			return mstate.aller(pos_base)"""
-
+#4vs4:
+#defenseur derriere
+#il va vers la balle pour l'enlever s'il est le plus proche d'elle ou que je suis le plus proche de mes coeq a cet adversaire, sinon je vais surveiller l'avant dernier de leurs attaquants, si la balle est a nous alor je me positionne entre mes 2 coeq attaquants legerement derriere
+class Defense1(Strategy):
+	def __init__(self, name="defense1"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self,state, idteam, idplayer):
+		mstate = MyState(state,idteam,idplayer)
+		sens = mstate.sens
+		adv_near = mstate.state.player_state(mstate.adv_nearby()[0], mstate.adv_nearby()[1]).position
+		ball_adv_near = mstate.ball_position.distance(adv_near)
+		co = mstate.coeq_libre if mstate.coeq_libre !=[0, 0] else mstate.co_players[0] 
+		co_pos = mstate.state.player_state(co[0], co[1]).position
+		me_ball = mstate.my_position.distance(mstate.ball_position+mstate.v_ball*10)
+		co_ball = co_pos.distance(mstate.ball_position+mstate.v_ball*10)
+		adv_danger2 = mstate.adv_danger2_but() 
+		pos_adv_danger2 = mstate.state.player_state(adv_danger2[0], adv_danger2[1]).position
+		pos_contre = pos_adv + Vector2D(-11,0) if mstate.sens == 1 else pos_adv + Vector2D(11, 0)
+		adv_ball = pos_adv_danger2.distance(mstate.ball_position+mstate.v_ball*10)
+		but_adv = mstate.but_adv
+		but = mstate.but
+		ball_but = mstate.ball_position.distance(but)
+		ball_but_adv = mstate.ball_position.distance(but_adv)
+		adv = mstate.state.player_state(mstate.adv_nearby()[0], mstate.adv_nearby()[1]).position
+		adv_speed = mstate.state.player_state(mstate.adv_nearby()[0], mstate.adv_nearby()[1]).vitesse
+		pos_init = Vector2D(adv.x- (10 * mstate.sens), 45)
+		y_move = (((adv_near.y -45) * abs(adv_near.x - 10*mstate.sens)) / abs(adv_near.x -but.x)) if abs(adv_near.x -but.x) > 3 else 0
+		me_but_mine = mstate.my_position.distance(mstate.but)
+		
+		"""if me_ball < adv_ball:
+			return mstate.shoot(co_pos)
+		elif adv.x < 11 and mstate.sens == 1 or :"""
+		att1 = mstate.co_danger_but()
+		att2 = mstate.co_danger2_but()
+		att1_pos = mstate.state.player_state(att1[0], att1[1]).position
+		att2_pos = mstate.state.player_state(att2[0], att2[1]).position
+		pos_att = (((att1_pos+att2_pos)/2) + Vector2D(-10,0)) if sens ==1 else (((att1_pos+att2_pos)/2) + Vector2D(10,0))
+		adv_2 = mstate.adv_danger2_but()
+		pos_def = mstate.state.player_state(adv_2[0], adv_2[1]).position + Vector2D(-10, 0) if sens ==1 else mstate.state.player_state(adv_2[0], adv_2[1]).position + Vector2D(10, 0)
+		diff = att2_pos - adv_near
+		move = diff/10
+		pos_def_off = mstate.my_position + move
+		if mstate.closest_ball: #si je suis le plus proche de tous de la balle
+			if me_but < 50:
+				return mstate.shoot(mstate.but_adv)
+			if me_but_mine < 43: #ma distance a mes buts
+				return mstate.degager
+			if mstate.champs_libre:
+				return mstate.go_but()
+			return mstate.passe(co_pos)
+		if mstate.our_ball:
+			return mstate.aller(pos_att)
+		if me_ball < ball_adv_near or (mstate.plus_proche and me_but_mine < 85):
+			return mstate.aller(pos_def_off)
+		return mstate.aller(pos_def)
+		
+		
+		
+#4vs4:
+#attaquant2:
+class Attaqtaq(Strategy):
+	def __init__(self, name="attaquant2"):
+		Strategy.__init__(self, name)
+	def compute_strategy(self, state, idteam, idplayer):
+		ms = MyState(state, idteam, idplayer)
+		
+		adv = ms.adv_nearby()
+		sens = ms.sens
+		coeq = ms.coeq_nearby()
+		
+		if ms.have_ball:
+			if ms.state.player_state(adv[0], adv[1]).position.x*sens < ms.my_position.x*sens:#adv le plus proche derrier: foncer but
+				return ms.go_but
+			#sinon si je suis le plus proche des buts je fonce
+			if ms.plus_proche_but:
+				return ms.go_but
+		#si j'ai pas la balle et aucun de mes coeq n'a la balle je fonce vers la balle 
+		co_pball = ms.co_pball()
+		#si je nesuis pas le plus prochede la balle je monte en attaque
+		#si la balle est dans mon camp je descend sinon je vais en attaque
+		if ms.ball_position.x*sens < 45:
+			return ms.aller_ball
+		elif ms.state.player_state(co_pball[0], co_pball[1]).position != ms.my_position:
+			return ms.aller(ms.but_adv - sens*Vector2D(-10, -5))
+		return ms.aller_ball
 #creation strategy
 class Attaquant(Strategy):
 	
@@ -385,7 +469,6 @@ class Gardien(Strategy):
 		adv_dist = me.distance(adv)
 		si_sort = True if (me.distance(ball) < (adv.distance(ball)+2*mstate.v_ball.norm) and ball.distance(but)<75) else False
 		si_avance = True if (me.distance(ball) < 2 * adv.distance(ball) and ball.distance(but)<35) else False
-		degager = mstate.shoot(but_adv)
 		#l'adversaire plus proches aux buts que le gardien
 		adv_but = [p for p in mstate.adv_players if (mstate.state.player_state(p[0],p[1]).position.distance(but) < me.distance(ball))]
 		#s'il y a un adversaire plus proche des buts que moi
@@ -399,7 +482,7 @@ class Gardien(Strategy):
 		
 		passer = mstate.shoot(pos_coeq_libre)
 	
-		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != [0, 0] else degager
+		joue = mstate.shoot(pos_coeq_libre) if mstate.coeq_libre != [0, 0] else mstate.degager
 		
 		me_ball = me.distance(ball+mstate.v_ball*10)
 		co_ball = co_pos.distance(mstate.ball_position+mstate.v_ball*10)
