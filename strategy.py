@@ -166,7 +166,7 @@ class Defense1(Strategy):
 		co_ball = co_pos.distance(mstate.ball_position+mstate.v_ball*10)
 		adv_danger2 = mstate.adv_danger2_but() 
 		pos_adv_danger2 = mstate.state.player_state(adv_danger2[0], adv_danger2[1]).position
-		pos_contre = pos_adv + Vector2D(-11,0) if mstate.sens == 1 else pos_adv + Vector2D(11, 0)
+		pos_contre = pos_adv_danger2 + Vector2D(-11,0) if mstate.sens == 1 else pos_adv_danger2 + Vector2D(11, 0)
 		adv_ball = pos_adv_danger2.distance(mstate.ball_position+mstate.v_ball*10)
 		but_adv = mstate.but_adv
 		but = mstate.but
@@ -177,6 +177,7 @@ class Defense1(Strategy):
 		pos_init = Vector2D(adv.x- (10 * mstate.sens), 45)
 		y_move = (((adv_near.y -45) * abs(adv_near.x - 10*mstate.sens)) / abs(adv_near.x -but.x)) if abs(adv_near.x -but.x) > 3 else 0
 		me_but_mine = mstate.my_position.distance(mstate.but)
+		me_but = mstate.my_position.distance(mstate.but_adv)
 		
 		"""if me_ball < adv_ball:
 			return mstate.shoot(co_pos)
@@ -197,7 +198,7 @@ class Defense1(Strategy):
 			if me_but_mine < 43: #ma distance a mes buts
 				return mstate.degager
 			if mstate.champs_libre:
-				return mstate.go_but()
+				return mstate.go_but
 			return mstate.passe(co_pos)
 		if mstate.our_ball:
 			return mstate.aller(pos_att)

@@ -28,7 +28,7 @@ j2 = Player("player2", Attaquant())
 j3 = Player("player3", Defenseur())
 j4 = Player("player4", Gardien())
 
-j5 = Player("def1", Defense())
+j5 = Player("def1", Defense1())
 j6 = Player("gard", Gardien())
 j7 = Player("attaqtaq", Attaqtaq())
 j8 = Player("attaq", Attaqtaq())
