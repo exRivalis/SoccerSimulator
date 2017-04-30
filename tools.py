@@ -199,15 +199,17 @@ class MyState(object):
 				
 	@property
 	def degager(self):
-		j = self.my_position
-		dist_j = j.distance(self.but_adv)
+		j = (self.key[0], self.key[1])
+		j_pos = self.my_position
+		dist_j = j_pos.distance(self.but_adv)
 		for p in self.co_players:
 			p_pos = self.state.player_state(p[0], p[1]).position
 			dist_p = p_pos.distance(self.but_adv)
 			if dist_p < dist_j:
 				j = p
+				j_pos = p_pos
 				dist_j = dist_p
-		return self.shoot(self.state.player_state(j[0], j[1]).position)
+		return self.shoot(j_pos)
 			
 	@property
 	def go_but(self):

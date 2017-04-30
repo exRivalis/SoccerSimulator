@@ -188,12 +188,12 @@ class Defense1(Strategy):
 		att2_pos = mstate.state.player_state(att2[0], att2[1]).position
 		pos_att = (((att1_pos+att2_pos)/2) + Vector2D(-10,0)) if sens ==1 else (((att1_pos+att2_pos)/2) + Vector2D(10,0))
 		adv_2 = mstate.adv_danger2_but()
-		pos_def = mstate.state.player_state(adv_2[0], adv_2[1]).position + Vector2D(-10, 0) if sens ==1 else mstate.state.player_state(adv_2[0], adv_2[1]).position + Vector2D(10, 0)
+		pos_def = mstate.state.player_state(adv_2[0], adv_2[1]).position + Vector2D(-5, 0) if sens ==1 else mstate.state.player_state(adv_2[0], adv_2[1]).position + Vector2D(5, 0)
 		diff = att2_pos - adv_near
-		move = diff/10
+		move = diff/15
 		pos_def_off = mstate.my_position + move
 		if mstate.closest_ball: #si je suis le plus proche de tous de la balle
-			if me_but < 50:
+			if me_but < 45:
 				return mstate.shoot(mstate.but_adv)
 			if me_but_mine < 43: #ma distance a mes buts
 				return mstate.degager
