@@ -109,14 +109,14 @@ class MyState(object):
 		#les cas ou je suis proche de la balle et elle va vite?
 		v_ball = self.v_ball
 		dist = self.dist_ball
-		k = (v_ball*3+(self.ball_position - self.my_position))
+		k = (v_ball*5+(self.ball_position - self.my_position))
 		joue = SoccerAction(k, Vector2D())
 		if self.dist_ball > 11:
 			return joue
 		elif self.dist_ball > 4:
-			return SoccerAction((self.ball_position - self.my_position)/2, Vector2D())
+			return SoccerAction((self.ball_position - self.my_position)*3, Vector2D())
 		else :
-			return SoccerAction((self.ball_position - self.my_position).normalize(), Vector2D())
+			return SoccerAction((self.ball_position - self.my_position).normalize()*5, Vector2D())
 	
 	
 	@property
@@ -156,7 +156,7 @@ class MyState(object):
 	
 	
 	def shoot(self, p) :
-		k = p.distance(self.my_position)/300
+		k = p.distance(self.my_position)/250
 		"""if self.can_shoot :
 			if (self.sens == 1 and self.my_position.x > 140) or (self.sens == -1 and self.my_position.x < 10) : 	
 				if self.my_position.y > 70 or self.my_position.y < 20 :
@@ -170,8 +170,8 @@ class MyState(object):
 			#print self.ball_position
 			#i = self.predict_ball
 			#print i
-			if self.my_position.distance(p) < 15 :
-				return self.tire((p-self.my_position)*2)
+			if self.my_position.distance(p) < 21 :
+				return self.tire((p-self.my_position)/5)
 			return self.tire(k*(p-self.my_position))  
 		else :
 			#attendre 5 tours
@@ -222,7 +222,7 @@ class MyState(object):
 	
 	@property
 	def tirer(self):
-		return SoccerAction(Vector2D(), (self.but_adv - self.my_position))
+		return SoccerAction(Vector2D(), (self.ball_position.distance(self.my_position)/300)*(self.but_adv - self.my_position))
 	
 	"""
 	@property

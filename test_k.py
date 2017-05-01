@@ -1,4 +1,4 @@
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, DefenseurPlus, SoloStrat, Solo, Gardien, Shooter, StratARien
 #les objets de base
 from soccersimulator import Vector2D, SoccerState, SoccerAction
 
@@ -15,7 +15,7 @@ from soccersimulator import settings
 from tactic import TTactic, FTactic, STactic
 #module math
 import math
-
+from observer import Observer
 from tools import MyState
 import logging
 logging.basicConfig(level = logging.DEBUG)
@@ -29,18 +29,18 @@ vB	= Vector2D(0, 0)
 state = SoccerState(states = {(1, 0) : PlayerState(posP, Vector2D(0, 0)), (2, 0) : PlayerState(posP, Vector2D(0, 0))}, ball = Ball(posB, vB))
 """
 
-p1 = Player("Houta", Attaquant())
-p2 = Player("Hmar", Gardien())
+p1 = Player("Houta", Shooter())
+p2 = Player("Hmar", StratARien())
 
 p3 = Player("vvvv", Attaquant())
 p4 = Player("wwww", Gardien())
 
-team1 = SoccerTeam("Bill", [p1, p2])
-team2 = SoccerTeam("Boule", [p3, p4])
+team1 = SoccerTeam("Bill", [p1])
+team2 = SoccerTeam("Boule", [p2])
 
-match = Simulation(team1, team2, 2000)
+match = Simulation(team1, team2, 500)
 
-
+Observer(match)
 show_simu(match)
 		
 		 
