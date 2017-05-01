@@ -71,7 +71,7 @@ class MyState(object):
 		me_ball = self.dist_ball
 		for p in self.all_players:
 			pos_p = self.state.player_state(p[0], p[1]).position
-			dist_p_ball = self.ball_position.distance(pos_p)
+			dist_p_ball = pos_p.distance(self.ball_position)
 			if me_ball > dist_p_ball :
 				return False
 		return True
@@ -132,15 +132,8 @@ class MyState(object):
 		
 		#print ball_pos_fin
 		return ball_pos_fin
-	"""def aller(self, p) :
-		dist = p.distance(self.my_position)
-		v_ball = self.v_ball
-		k = (p-self.my_position)/300
-		if dist > 10:
-			return SoccerAction((p-self.my_position) , Vector2D())
-		elif dist > 5:
-			return SoccerAction((p-self.my_position) , Vector2D())
-		return SoccerAction((p-self.my_position) , Vector2D())"""
+	
+	
 	
 	def champs_libre(self):
 		adv = self.adv_nearby()
@@ -300,6 +293,32 @@ class MyState(object):
 				pp2 = p
 		return pp2
 	
+	@property
+	def adv_dernier_def(self):
+		players = self.adv_players
+		pp = players[0]
+		for p in players:
+			x_pp = self.state.player_state(pp[0], pp[1]).position.x
+			x_p = self.state.player_state(p[0], p[1]).position.x
+			if (x_p > x_pp and self.sens == 1) or (x_p < x_pp and self.sens == -1) :
+				pp = p
+		return pp
+	@property
+	def adv_def2(self):
+		players = self.adv_players
+		
+		pp1 = self.adv_dernier_def
+		if pp1 == players[0] :
+			pp2 = players[1]
+		else :
+			pp2 = players[0]
+		for p in players:
+			#le x du 2eme attaquant
+			x_pp = self.state.player_state(pp2[0], pp2[1]).position.x
+			x_p = self.state.player_state(p[0], p[1]).position.x
+			if (pp1 != pp2 and x_p > x_pp and self.sens == 1) or (pp1 != pp2 and x_p < x_pp and self.sens == -1) :
+				pp2 = p
+		return pp2
 	
 	def co_danger_but(self):
 		players = self.co_players
@@ -381,8 +400,7 @@ class MyState(object):
 		pp = players[0]
 		
 		for p in players:
-			#print self.my_position.distance(self.state.player_state(p[0], p[1]).position)
-			#print self.my_position.distance(self.state.player_state(pp[0], pp[1]).position)
+			
 			if self.my_position.distance(self.state.player_state(p[0], p[1]).position) < self.my_position.distance(self.state.player_state(pp[0], pp[1]).position):
 				pp = p
 		return pp
@@ -405,15 +423,25 @@ class MyState(object):
 		adv_pos = self.state.player_state(adv[0], adv[1]).position
 		#print self.state.player_state(self.key[0], self.key[1])._rd_angle(Vector2D(1, 1), 90, 1)
 		if sens == 1 :
-			if me.x < adv_pos.x :
+			if me.x < adv_pos.x and me.x < 130 and me.y < 85 and me.y > 5 :
 				if me.y < adv_pos.y :
-					return self.shoot((self.ball_position + sens*Vector2D(10, -10)).normalize()*7) # + self.aller(self.ball_position + sens*Vector2D(10, -10))
+					if self.can_shoot:
+						return self.tire((self.ball_position + sens*Vector2D(10, -10)).normalize()*7)
+					return self.aller(self.ball_position)
 				else :
-					return self.shoot((self.ball_position + sens*Vector2D(10, 10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
-		elif me.x > adv_pos.x :
+					if self.can_shoot:
+						return self.tire((self.ball_position + sens*Vector2D(10, 10)).normalize()*7)
+					return self.aller(self.ball_position)
+			return self.go_but
+		elif me.x > adv_pos.x and sens == -1 and me.x > 20 and me.y < 85 and me.y >5 :
 			if me.y	< adv_pos.y :
-				return self.shoot((self.ball_position + sens*Vector2D(10, 10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))	
+				if self.can_shoot:
+					return self.tire((self.ball_position + sens*Vector2D(10, 10)).normalize()*7)
+				return self.aller(self.ball_position)
 			else:
-				return self.shoot((self.ball_position + sens*Vector2D(10, -10)).normalize()*7) #+ self.aller(self.ball_position + sens*Vector2D(10, -10))
+				if self.can_shoot:
+					return self.tire((self.ball_position + sens*Vector2D(10, -10)).normalize()*7)
+				return self.aller(self.ball_position)
+			return self.go_but
 		else :
 			return self.shoot((self.but_adv+me)/2)
