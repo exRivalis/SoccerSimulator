@@ -16,14 +16,14 @@ import math
 #toolbox
 from tools import MyState
 
-from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloStrat, Solo, Gardien, GardienB, Defense1
+from strategy import RandomStrategy, Attaquant, AttaquantPlus, Defenseur, SoloStrat, Solo, Gardien, GardienB, Defense1, Atta2
 
 jean = Player("Drexor", Attaquant())
 sydney = Player("Keeper", GardienB())
 
 solo = Player("miche-miche", Solo())
 
-maestro = Player("Maestro", AttaquantPlus())
+maestro = Player("Maestro", Atta2())
 leonardo = Player("Leo", Defenseur())
 
 ahmed = Player("chef", Defense1())
