@@ -114,9 +114,9 @@ class MyState(object):
 		if self.dist_ball > 11:
 			return joue
 		elif self.dist_ball > 4:
-			return SoccerAction((self.ball_position - self.my_position)*3, Vector2D())
+			return SoccerAction((self.ball_position - self.my_position)*2, Vector2D())
 		else :
-			return SoccerAction((self.ball_position - self.my_position).normalize()*5, Vector2D())
+			return SoccerAction((self.ball_position - self.my_position).normalize(), Vector2D())
 	
 	
 	@property
@@ -222,7 +222,9 @@ class MyState(object):
 	
 	@property
 	def tirer(self):
-		return SoccerAction(Vector2D(), (self.ball_position.distance(self.my_position)/300)*(self.but_adv - self.my_position))
+		if self.can_shoot:
+			return SoccerAction(Vector2D(), (self.ball_position.distance(self.my_position)/300)*(self.but_adv - self.my_position))
+		return self.aller(self.ball_position)
 	
 	"""
 	@property

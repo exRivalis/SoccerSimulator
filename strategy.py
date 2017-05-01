@@ -383,6 +383,8 @@ class Solo(Strategy):
 		me = mstate.my_position
 		if mstate.my_position.distance(mstate.but_adv) >30 :
 			if mstate.my_position.distance(mstate.state.player_state(adv[0][0], adv[0][1]).position) < 15 :
+				if mstate.my_position.distance(mstate.state.player_state(adv[0][0], adv[0][1]).position) < 3 :
+					return mstate.shoot(mstate.but_adv)
 				return mstate.drible()
 			return mstate.go_but
 		return mstate.shoot(mstate.but_adv)
