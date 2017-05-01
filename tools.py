@@ -170,7 +170,7 @@ class MyState(object):
 			#print self.ball_position
 			#i = self.predict_ball
 			#print i
-			if self.my_position.distance(p) < 20 :
+			if self.my_position.distance(p) < 15 :
 				return self.tire((p-self.my_position)*2)
 			return self.tire(k*(p-self.my_position))  
 		else :
