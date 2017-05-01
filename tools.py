@@ -207,7 +207,7 @@ class MyState(object):
 	@property
 	def go_but(self):
 		if self.can_shoot:
-			return self.tire(((self.but_adv-self.my_position).normalize())*3)
+			return self.tire(((self.but_adv-self.my_position).normalize())*2)
 		return self.aller_ball
 	
 	@property

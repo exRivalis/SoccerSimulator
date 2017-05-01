@@ -207,7 +207,7 @@ class Defense1(Strategy):
 				return mstate.degager
 			if mstate.champs_libre:
 				return mstate.go_but
-			return mstate.passe(co_pos)
+			return mstate.passe(co)
 		if mstate.our_ball:
 			return mstate.aller(pos_att)
 		if me_ball < ball_adv_near or (mstate.plus_proche and me_but_mine < 85):
@@ -246,7 +246,7 @@ class Atta2(Strategy):
 				return mstate.degager
 			if mstate.champs_libre:
 				return mstate.go_but
-			return mstate.passe(co_pos)
+			return mstate.passe(co)
 		if mstate.our_ball:
 			return mstate.aller(pos_att)
 		#la balle en attaque
@@ -309,8 +309,8 @@ class Attaquant(Strategy):
 		et l'autre joueur avance vers la balle si l'autre joueur est en defense sinon va vers les buts'
 		"""
 		#mon coeq plus proche de la balle alor j'attend la balle j'y vais pas
-		me_ball = mstate.my_position.distance(mstate.ball_position+mstate.v_ball*10)
-		co_ball = mstate.state.player_state(mstate.co_players[0][0], mstate.co_players[0][1]).position.distance(mstate.ball_position+mstate.v_ball*10)
+		me_ball = mstate.my_position.distance(mstate.ball_position+mstate.v_ball*5)
+		co_ball = mstate.state.player_state(mstate.co_players[0][0], mstate.co_players[0][1]).position.distance(mstate.ball_position+mstate.v_ball*5)
 		adv = mstate.adv_danger_but()
 		pos_adv = mstate.state.player_state(adv[0], adv[1]).position
 		pos_contre = pos_adv + Vector2D(25,0) if sens == 1 else pos_adv + Vector2D(-25, 0)

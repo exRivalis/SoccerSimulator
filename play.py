@@ -44,7 +44,7 @@ team41 = SoccerTeam("Eq1", [j1, j2, j3, j4])
 team42 = SoccerTeam("Eq2", [j5, j6, j7, j8])
 team_s1 = SoccerTeam("winner", [solo1])
 team_s2 = SoccerTeam("looser", [solo2])
-match = Simulation(team41,team42, 2000)
+match = Simulation(team1,team2, 2000)
 #match = Simulation(team_s1, team_s2, 2000)
 #print team1.players
 
